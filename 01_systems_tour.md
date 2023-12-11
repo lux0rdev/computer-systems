@@ -227,11 +227,13 @@ We use the term **concurrency** to refer to the general concept of a system with
 
 #### Thread Level Concurrency
 
+We are able to devise systems where multiple programs execute at the same time, leading to concurrency. With threads, we can even have multiple control flows executing within a single process.
+
 Traditionally, this concurrent execution was only simulated, by having a single computer rapidly switch among its executing processes, much as a juggler keeps multiple balls flying through the air. This form of concurrency allows multiple users to interact with a system at the same time, such as when many people want to get pages from a single Web server. It also allows a single user to engage in multiple tasks concurrently, such as having a Web browser in one window, a word processor in another, and streaming music playing at the same time. Until recently, most actual computing was done by a single processor, even if that processor had to switch among multiple tasks. This configuration is known as a **uniprocessor** system.
 
 When we construct a system consisting of multiple processors all under the control of a single operating system kernel, we have a *multiprocessor* system.
 
-Multi-core processors have several CPUs (referred to as “cores”) integrated onto a single integrated-circuit chip.
+Multi-core processors have several CPUs (referred to as “cores”) integrated onto a single integrated-circuit chip. In a typical multi-core processor, the chip has four CPU cores, each with its own L1 and L2 caches, and with each L1 cache split into two parts—one to hold recently fetched instructions and one to hold data. The cores share higher levels of cache as well as the interface to main memory.
 
 **Hyperthreading**, sometimes called simultaneous multi-threading, is a technique that allows a single CPU to execute multiple 
 flows of control. It involves having multiple copies of some of the CPU hardware, such as program counters and register files, while having only single copies of other parts of the hardware, such as the units that perform floating-point arithmetic. A hyperthreaded processor decides which of its threads to execute on a cycle-by- cycle basis. It enables the CPU to take better advantage of its processing resources.
