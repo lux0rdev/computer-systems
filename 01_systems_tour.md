@@ -1,5 +1,38 @@
 # 01: A Tour of Computer Systems
 
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [01: A Tour of Computer Systems](#01-a-tour-of-computer-systems)
+   * [1.1 Information Is Bits + Context](#11-information-is-bits-context)
+   * [1.2 Programs Are Translated by Other Programs into Different Forms](#12-programs-are-translated-by-other-programs-into-different-forms)
+   * [1.3 It Pays to Understand How Compilation Systems Work](#13-it-pays-to-understand-how-compilation-systems-work)
+   * [1.4 Processors Read and Interpret Instructions Stored in Memory](#14-processors-read-and-interpret-instructions-stored-in-memory)
+   * [1.4.1 Hardware Organization of a System](#141-hardware-organization-of-a-system)
+      + [Buses](#buses)
+      + [I/O Devices](#io-devices)
+      + [Main Memory](#main-memory)
+      + [Processor](#processor)
+   * [1.5 Caches Matter](#15-caches-matter)
+   * [1.6 Storage Devices Form a Hierarchy](#16-storage-devices-form-a-hierarchy)
+   * [1.7 The Operating System Manages the Hardware](#17-the-operating-system-manages-the-hardware)
+      + [1.7.1 Processes](#171-processes)
+      + [1.7.2 Threads](#172-threads)
+      + [1.7.3 Virtual Memory](#173-virtual-memory)
+      + [1.7.4 Files](#174-files)
+   * [1.8 Systems Communicate with Other Systems Using Networks](#18-systems-communicate-with-other-systems-using-networks)
+   * [1.9 Important Themes](#19-important-themes)
+      + [1.9.1 Amdahl's Law](#191-amdahls-law)
+      + [1.9.2 Concurrency and Parallelism](#192-concurrency-and-parallelism)
+         - [Thread Level Concurrency](#thread-level-concurrency)
+         - [Instruction Level Parallelism](#instruction-level-parallelism)
+         - [Single instruction, Multiple-Data(SIMD) Parallelism](#single-instruction-multiple-datasimd-parallelism)
+      + [1.9.3 The Importance of Abstractions in Computer Systems](#193-the-importance-of-abstractions-in-computer-systems)
+   * [1.10 Summary](#110-summary)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="01-a-tour-of-computer-systems"></a>
+
 A computer system consists of hardware and systems software that work together to run application programs. Specific implementations of system change over time, but the underlying concepts do not. All computer systems have similar hardware and software components that perform similar functions.
 
 We will use a simple C _hello world_ program (the model program, or _the program_ from now on) for didactic purposes:
