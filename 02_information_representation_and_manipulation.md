@@ -67,7 +67,7 @@ A single byte consists of 8 bits. In binary notation, its value ranges from 0000
 
 Neither notation is very convenient for describing bit patterns; we write bit patterns as base-16, or hexadecimal numbers.
 
-![Hexadecimal Notation](/images/6.png)
+![Hexadecimal Notation](/assets/6.png)
 
 ### 2.1.2 Data Sizes
 
@@ -82,7 +82,7 @@ Computers and compilers support multiple data formats using different ways to en
 The C language supports multiple data formats for both integer and floating- point data. Figure 2.3 shows the number of bytes typically allocated for different C data types.
 
 
-![Type sizes](/images/7.png)
+![Type sizes](/assets/7.png)
 
 Programmers should strive to make their programs portable across different machines and compilers. One aspect of portability is to make the program insensitive to the exact sizes of the different data types. The C standards set lower bounds on the numeric ranges of the different data types, as will be covered later, but there are no upper bounds (except with the fixed-size types).
 
@@ -136,7 +136,7 @@ This started with the work of George Boole (1815– 1864) around 1850 and thus i
 
 The simplest Boolean algebra is defined over the two-element set {0, 1}.
 
-![Boolean operations](./images/8.png)
+![Boolean operations](./assets/8.png)
 
 Claude Shannon (1916–2001), who later founded the field of information theory, first made the connection between Boolean algebra and digital logic. In his 1937 master’s thesis, he showed that Boolean algebra could be applied to the design and analysis of networks of electromechanical relays. Although computer technology has advanced considerably since, Boolean algebra still plays a central role in the design and analysis of digital systems.
 
@@ -146,7 +146,7 @@ Let a and b denote the bit vectors [a<sub>w-1</sub>, a<sub>w-2</sub>, . . . , a<
 
 As examples, consider the case where w = 4, and with arguments a = [0110] and b = [1100]. Then the four operations _a & b_, _a | b_, _a ^ b_, and _~b_ yield:
 
-![Bit Operations](./images/9.png)
+![Bit Operations](./assets/9.png)
 
 One useful application of bit vectors is to represent finite sets. We can encode any subset A ? {0, 1, . . . , w - 1} with a bit vector [aw-1, . . . , a1, a0], where ai = 1if and only if i ? A. For example, recalling that we write aw-1 on the left and a0 on the right, bit vector a = [01101001] encodes the set A = {0, 3, 5, 6}, while bit vector b = [01010101]encodes the set B = {0, 2, 4, 6}. With this way of encoding sets, Boolean operations | and & correspond to set union and intersection, respectively, and ~ corresponds to set complement. Continuing our earlier example, the operation a & b yields bit vector [01000001], while A n B = {0, 6}.
 
@@ -154,7 +154,7 @@ One useful application of bit vectors is to represent finite sets. We can encode
 
 Computers generate color pictures on a video screen or liquid crystal display by mixing three different colors of light: red, green, and blue. Imagine a simple scheme, with three different lights, each of which can be turned on or off, projecting onto a glass screen:
 
-![Colors](./images/10.png)
+![Colors](./assets/10.png)
 
 We can then create eight different colors based on the absence (0) or presence (1) of light sources R, G, and B:
 
@@ -177,7 +177,7 @@ One useful feature of C is that it supports bitwise Boolean operations. In fact,
 
 Here are some examples of expression evaluation for data type char:
 
-![Bit operations 2](./images/11.png)
+![Bit operations 2](./assets/11.png)
 
 One common use of bit-level operations is to implement masking operations, where a mask is a bit pattern that indicates a selected set of bits within a word. As an example, the mask 0xFF (having ones for the least significant 8 bits) indicates the low-order byte of a word. The bit-level operation x & 0xFF yields a value consisting of the least significant byte of x, but with all other bytes set to 0. For example, with x = 0x89ABCDEF, the expression would yield 0x000000EF.
 
@@ -198,7 +198,7 @@ There is a corresponding right shift operation, written in C as x >> k, but it h
 
 As examples, the following table shows the effect of applying the different shift operations to two different values of an 8-bit argument x:
 
-![Right shifts](./images/12.png)
+![Right shifts](./assets/12.png)
 
 The C standards do not precisely de?ne which type of right shift should be used with signed numbers—either arithmetic or logical shifts may be used. This unfortunately means that any code assuming one form or the other will potentially encounter portability problems. In practice, however, almost all compiler/machine combinations use arithmetic right shifts for signed data, and many programmers assume this to be the case.
 
@@ -217,8 +217,8 @@ This is the mathematical terminology we use to define and characterize how compu
 
 | Symbol | Type |  Meaning |
 | --- | --- | --- |
-| B2T<sub>w</sub>| Function | Binary to two’s complement  |
 | B2U<sub>w</sub>| Function | Binary to unsigned |
+| B2T<sub>w</sub>| Function | Binary to two’s complement  |
 | U2B<sub>w</sub>| Function | Unsigned to binary |
 | U2T<sub>w</sub>| Function | Unsigned to two’s complement |
 | T2B<sub>w</sub>| Function | Two’s complement to binary |
@@ -227,10 +227,83 @@ This is the mathematical terminology we use to define and characterize how compu
 | TMax<sub>w</sub>| Constant | Maximum two’s-complement value |
 | UMax<sub>w</sub>| Constant | Maximum unsigned value|
 | +wt | Operation | Two’s-complement addition |
-| +wu | Operation | Unsigned addition 121 
+| +wu | Operation | Unsigned addition 121 |
 | *wt | Operation | Two’s-complement multiplication |
 | *wu | Operation | Unsigned multiplication |
 | -wt | Operation | Two’s-complement negation |
 | -wu | Operation | Unsigned negation|
 
 ### 2.2.1 Integral Data Types
+
+C supports a variety of integral data types—ones that represent ﬁnite ranges of integers. Each type can specify a size with keyword `char`, `short`, `long`, as well as an indication of whether the represented numbers are all nonnegative (declared as `unsigned`), or possibly negative (the default.)
+
+![Types](./assets/14.png)
+![Types2](./assets/13.png)
+
+One important feature to note is that the ranges are not symmetric—the range of negative numbers extends one further than the range of positive numbers.
+
+### 2.2.2 Unsigned Encodings
+
+#### Principle: **Definition of unsigned encoding**
+
+Let us consider an integer data type of _w_ bits. We write a bit vector as either x<sup>➡</sup>, to denote the entire vector, or as [x<sub>w-1</sub>, x<sub>w-2</sub>, . . . , x<sub>0</sub>] to denote the individual bits within the vector.
+
+![Types](./assets/15.png)
+![](assets/2023-12-19-13-38-13.png)
+
+The function B2U<sub>w</sub> maps strings of zeros and ones of length _w_ to nonnegative integers.
+
+#### Principle: **Uniqueness of unsigned encoding**
+
+The unsigned binary representation has the important property that every number between 0 and 2 _w_ − 1 has a unique encoding as a  _w_-bit value.
+
+Function B2U<sub>w</sub> is a bijection. The mathematical term bijection refers to a function f that goes two ways; in this case, the function B2U<sub>w</sub> maps each bit vector of length w to a unique number between 0 and 2 _w_ − 1, and it has an inverse, which we call U2B<sub>w</sub> (for “unsigned to binary”), that maps each number in the range 0 to 2 _w_ − 1 to a unique pattern of _w_ bits.
+
+### 2.2.3 Two's Complement 
+
+The most common computer representation of signed numbers is known as two’s-complement form. This is defined by interpreting the most significant bit of the word to have negative weight. We express this interpretation as a function B2T<sub>w</sub> (for “binary to two’s complement” length w):
+
+#### Principle: **Definition of two's-complement encoding**
+
+![](assets/2023-12-19-13-47-37.png)
+
+The most significant bit xw-1 is also called the sign bit. Its “weight” is -2<sup>w-1</sup>, the negation of its weight in an unsigned representation. When the sign bit is set to 1, the represented value is negative, and when set to 0, the value is nonnegative.
+
+![](assets/2023-12-19-13-49-34.png)
+
+The least representable value is given by bit vector [1,0 . . . 0] (set the bit with negative weight but clear all others), having integer value TMin<sub>w</sub> = -2<sup>w-1</sup>. The greatest value is given by bit vector [0,1 . . . 1] (clear the bit with negative weight but set all others), having integer value 2<sup>w-1</sup> -1.
+
+Every number within the representable range has a unique encoding as a _w_-bit two’s-complement number:
+
+#### Principle: **Uniqueness of two's complement encoding**
+
+Function B2Tw is a bijection. 
+
+We define function T2B<sub>w</sub> (for two's complement to binary) to be the inverse of B2T<sub>w</sub>. That is, for a number x, such that TMin<sub>w</sub> . x . TMax<sub>w</sub>, T2B<sub>w</sub>(x) is the (unique) _w_-bit pattern that encodes x.
+
+Some points to highlight:
+
+The two’s-complement range is asymmetric: |_TMin_| = |_TMax_| + 1; that is, there is no positive counterpart to _TMin_. This leads to some peculiar properties of two’s-complement arithmetic and can be the source of subtle program bugs. The reason is that 0 is included in the nonnegative (so we have one less positive)
+
+Second, the maximum unsigned value is just over twice the maximum two’s-complement value: _UMax_ = _2TMax_ + 1. All of the bit patterns that denote negative numbers in two’s-complement notation become positive values in an unsigned representation.
+
+>For some programs, it is essential that data types be encoded using representations with specific sizes. For example, when writing programs to enable a machine to communicate over the Internet according to a standard protocol, it is important to have data types compatible with those specified by the protocol.
+
+The C standards do not require signed integers to be represented in two’s complement form, but nearly all machines do so. Programmers who are concerned with maximizing portability across all possible machines should not assume any particular range of representable values, nor should they assume any particular representation of signed numbers. On the other hand, many programs are written assuming a two’s-complement representation of signed numbers, and the “typical” ranges shown in Figures 2.9 and 2.10, and these programs are portable across a broad range of machines and compilers.
+
+### 2.2.4 Conversions between Signed and Unsigned
+
+C allows casting between different numeric data types. For example, suppose variable x is declared as int and u as unsigned. The expression (unsigned) x converts the value of x to an unsigned value, and (int) u converts the value of u to a signed integer.
+
+The effect of casting is to keep the bit values identical but change how these bits are interpreted. The underlying bit representation stays the same. This is a general rule for how most C implementations handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not.
+
+#### Principle: **Conversions from two's complement to unsigned**
+
+![](assets/2023-12-19-14-12-36.png)
+
+![](assets/2023-12-19-14-13-22.png)
+
+As it shows, when mapping a signed number to its unsigned counterpart, negative numbers are converted to large positive numbers, while nonnegative numbers remain unchanged.
+
+#### Principle: **Conversion from unsigned to two's complement**
+

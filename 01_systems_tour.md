@@ -63,7 +63,7 @@ The program begins life as a high-level C program because it can be read and und
 
 On a Unix system, the translation from source file to object file is performed by a compiler driver:
 
-![1.3](./images/1.png)
+![1.3](./assets/1.png)
 
 The translation is performed in the sequence of four phases:
 
@@ -103,7 +103,7 @@ The shell is a command-line interpreter that prints a prompt, waits for you to t
 
 ## 1.4.1 Hardware Organization of a System
 
-![1.4](./images/2.png)
+![1.4](./assets/2.png)
 
 ### Buses
 
@@ -160,7 +160,7 @@ The idea behind caching is that _a system can get the effect of both a very larg
 
 One of the most important lessons in this book is that application _programmers who are aware of cache memories can exploit them to improve the performance of their programs by an order of magnitude_.
 
-![1.9](./images/3.png)
+![1.9](./assets/3.png)
 
 ## 1.6 Storage Devices Form a Hierarchy
 
@@ -168,7 +168,7 @@ The storage devices in every computer system are organized as a **memory hierarc
 
 ## 1.7 The Operating System Manages the Hardware
 
-![1.10-11](./images/4.png)
+![1.10-11](./assets/4.png)
 
 The programs do not access keyboard, display, disk, or main memory directly. Rather, they relied on the services provided by the operating system. We can think of the operating system as a layer of software interposed between the application program and the hardware. All attempts by an application program to manipulate the hardware must go through the operating system.
 
@@ -205,7 +205,7 @@ Although we normally think of a process as having a single control flow, in mode
 
 ### 1.7.3 Virtual Memory
 
-![1.13](./images/5.png)
+![1.13](./assets/5.png)
 
 Virtual memory is an abstraction that provides each process with the illusion that it has exclusive use of the main memory. Each process has the same uniform view of memory, which is known as its **virtual address space**. The virtual address space for Linux processes is shown in Figure 1.13. (Other Unix systems use a similar layout.)
 
