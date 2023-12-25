@@ -307,3 +307,251 @@ As it shows, when mapping a signed number to its unsigned counterpart, negative 
 
 #### Principle: **Conversion from unsigned to two's complement**
 
+![](assets/2023-12-21-16-29-46.png)
+
+![](assets/2023-12-21-16-30-01.png)
+
+To summarize, we considered the effects of converting in both directions between unsigned and two's-complement representations. For values x in the range 0 ≤ x ≤ TMax<sub>w</sub>, we have T2U<sub>w</sub>(x) = x and U2T<sub>w</sub>(x) = x. That is, numbers in this range have identical unsigned and two's-complement representations. For values outside of this range, the conversions either add or subtract 2<sup>w</sup>.
+
+### 2.2.5 Signed versus Unsigned in C
+
+C supports both signed and unsigned arithmetic for all of its integer data types. Although the C standard does not specify a particular representation of signed numbers, almost all machines use two’s complement. Generally, most numbers are signed by default.
+
+C allows conversion between unsigned and signed; most systems follow the rule that the underlying bit representation does not change.
+
+This rule has the effect of applying the function U2T<sub>w</sub> when converting from unsigned to signed, and T2U<sub>w</sub> when converting from signed to unsigned, where w is the number of bits for the data type.
+
+Conversions can happen due to explicit casting:
+
+```c
+int tx, ty; 
+unsigned ux, uy; 
+
+tx = (int) ux; 
+uy = (unsigned) ty;
+```
+
+Alternatively, they can happen implicitly when an expression of one type is assigned to a variable of another:
+
+```c
+int tx, ty;
+unsigned ux, uy;
+
+tx = ux; /* Cast to signed */
+uy = ty; /* Cast to unsigned */
+```
+
+### 2.2.6 Expanding the Bit Representation of a Number
+
+One common operation is to convert between integers having different word sizes while retaining the same numeric value. Of course, this may not be possible when
+the destination data type is too small to represent the desired value. Converting from a smaller to a larger data type, however, should always be possible.
+
+To convert an unsigned number to a larger data type, we can simply add leading zeros to the representation; this operation is known as zero extension:
+
+![](assets/2023-12-21-16-46-47.png)
+
+#### Principle: Expansion of an unsigned number by _zero_ extension
+
+![](assets/2023-12-21-16-46-16.png)
+
+#### Principle: Expansion of a two's-complement number by _sign_ extension
+
+For converting a two’s-complement number to a larger data type, the rule is to perform a sign extension, adding copies of the most significant bit to the representation, expressed by the following principle:
+
+![](assets/2023-12-21-16-46-04.png)
+
+Sign extension preserves the value of a two’s-complement number.
+
+### 2.2.7 Truncating Numbers
+
+If we reduce the number of bits that represent a number, rather than extending a value with extra bits, we are **truncating** the number.
+
+This can happen when, for instance, we cast `x` to be `short`, truncating a 32-bit `int` to a 16-bit `short`:
+
+```c
+int x = 53191;
+short sx = (short) x; /* -12345 */
+int y = sx; /* -12345 */
+```
+
+When truncating a _w_-bit number _x→_ = [x<sub>w-1</sub>, x<sub>w-2</sub>, . . . , x<sub>0</sub>] to a _k_-bit number, we drop the high-order _w - k_ bits, giving a bit vector _x→'_ = [x<sub>k-1</sub>, x<sub>k-2</sub>, . . . , x<sub>0</sub>].
+
+Truncating a number can alter its value—a form of overflow. For an unsigned number, we can readily characterize the numeric value that will result.
+
+#### Principle: **Truncation of an unsigned number**
+
+![](assets/2023-12-22-16-47-15.png)
+
+The intuition behind this principle is simply that all of the bits that were truncated have weights of the form 2i , where i ≥ k, and therefore each of these weights reduces to zero under the modulus operation.
+
+#### Principle: **Truncation of a two's-complement number**
+
+![](assets/2023-12-22-16-48-43.png)
+
+In this formulation, x mod 2<sup>k</sup> will be a number between 0 and 2<sup>k - 1</sup>. Applying function U2T<sub>k</sub> to it will have the effect of converting the most significant bit x<sup>k - 1</sup> from having weight 2<sup>k - 1</sup> to having weight −2<sup>k - 1</sup>.
+
+### 2.2.8 Advice on Signed versus Unsigned
+
+As we have seen, the implicit casting of signed to unsigned leads to some nonintuitive behavior. Nonintuitive features often lead to program bugs, and ones involving the nuances of implicit casting can be especially difficult to see. Since the casting takes place without any clear indication in the code, programmers often overlook its effects.
+
+One way to avoid such bugs is to never use unsigned numbers. In fact, few languages other than C support unsigned integers.
+
+Unsigned values are very useful when we want to think of words as just collections of bits with no numeric interpretation. This occurs, for example, when packing a word with flags describing various Boolean conditions. Addresses are naturally unsigned, so systems programmers find unsigned types to be helpful. Unsigned values are also useful when implementing mathematical packages for
+modular arithmetic and for multiprecision arithmetic, in which numbers are represented by arrays of words.
+
+## 2.3 Integer Arithmetic
+
+It's important to consider the **artifacts of the finite computer arithmetic**. Understanding the nuances of computer arithmetic can help programmers write more reliable code. For example, adding two positive numbers can yield a negative result, and that the comparison `x < y` can yield a different result than the comparison `x-y < 0`.
+
+### 2.3.1 Unsigned Addition
+
+#### Principle: **Unsigned addition**
+
+![](assets/2023-12-23-15-57-32.png)
+
+The normal case preserves the value of x + y, while the overflow case has the effect of decrementing this sum by 2<sub>w</sub>.
+
+An arithmetic operation is said to overflow when the full integer result cannot fit within the word size limits of the data type.
+
+![](assets/2023-12-23-15-59-04.png)
+
+#### Principle: **Detecting overflow of unsigned addition**
+
+![](assets/2023-12-23-15-59-54.png)
+
+>Modular addition forms a mathematical structure known as an **abelian** group, named after the Norwegian mathematician Niels Henrik Abel (1802–1829). That is, it is commutative (that’s where the “abelian” part comes in) and associative; it has an identity element 0, and every element has an additive inverse.
+
+#### Principle: **Unsigned negation**
+
+![](assets/2023-12-23-16-02-50.png)
+
+### 2.3.2 Two's-Complement Addition
+
+With two’s-complement addition, we must decide what to do when the result is either too large (positive) or too small (negative) to represent.
+
+We avoid ever-expanding data sizes by truncating the representation to _w_ bits.
+
+#### Principle: **Two's complement addition**
+
+![](assets/2023-12-23-16-05-29.png)
+
+When the sum x + y exceeds TMax<sub>w</sub> (case 4), we say that positive overflow has occurred. In this case, the effect of truncation is to subtract 2<sub>w</sub> from the sum. When the sum x + y is less than TMin<sub>w</sub> (case 1), we say that negative overflow has occurred. In this case, the effect of truncation is to add 2<sub>w</sub> to the sum. The w-bit two’s-complement sum of two numbers has the exact same bit-level representation as the unsigned sum. In fact, most computers use the same machine instruction to perform either unsigned or signed addition:
+
+![](assets/2023-12-23-16-08-20.png)
+
+![](assets/2023-12-23-16-08-41.png)
+
+#### Principle: **Detecting overflow in two's-complement addition**
+
+![](assets/2023-12-23-16-09-52.png)
+
+### 2.3.3 Two's-Complement Negation
+
+We can see that every number x in the range TMin<sub>w</sub> ≤ x ≤ TMax<sub>w</sub> has an additive inverse under +tw, which we denote -tw x as follows:
+
+#### Principle: **Two's complement negation**
+
+![](assets/2023-12-24-15-41-52.png)
+
+That is, for w-bit two’s-complement addition, TMin<sub>w</sub> is its own additive inverse, while any other value x has −x as its additive inverse.
+
+### 2.3.4 Unsigned Multiplication
+
+#### Principle: **Unsigned multiplicaiton**
+
+![](assets/2023-12-24-15-51-15.png)
+
+Integers x and y in the range 0 ≤ x, y ≤ 2<sup>w</sup> − 1 can be represented as w-bit unsigned numbers, but their product x . y can range between 0 and (2<sup>w</sup> − 1)<sup>2</sup> = 2<sup>2w</sup> − 2<sup>w + 1</sup> + 1. This could require as many as 2w bits to represent. Instead, unsigned multiplication in C is defined to yield the w-bit value given by the low-order w bits of the 2w-bit integer product.
+
+Truncating an unsigned number to w bits is equivalent to computing its value modulo 2<sup>w</sup>:
+
+### 2.3.5 Two's Complement Multiplication
+
+#### Principle: **Two's complement multiplication**
+
+Signed multiplication in C generally is performed by truncating the 2w-bit product to w bits.
+
+We denote this value as x *tw y. Truncating a two’s-complement number to w bits is equivalent to first computing its value modulo 2<sup>2</sup> and then converting from unsigned to two’s complement:
+
+![](assets/2023-12-24-15-53-59.png)
+
+#### Principle: **Bit-level equivalence of unsigned and two's complement multiplication**
+
+The bit-level representation of the product operation is identical for both unsigned and two’s-complement multiplication
+
+![](assets/2023-12-24-15-58-14.png)
+
+![](assets/2023-12-24-15-58-54.png)
+
+### 2.3.6 Multiplying by Constants
+
+Historically, the integer multiply instruction on many machines was fairly slow, requiring 10 or more clock cycles, whereas other integer operations—such as addition, subtraction, bit-level operations, and shifting—required only 1 clock cycle. As a consequence, one important optimization used by compilers is to attempt to replace multiplications by constant factors with combinations of shift and addition operations. 
+
+We will first consider the case of multiplying by a power of 2, and then we will generalize this to arbitrary constants.
+
+#### Principle: **Multiplication by a power of 2**
+
+![](assets/2023-12-25-17-42-28.png)
+
+So, for example, 11 can be represented for w = 4 as [1011]. Shifting this left by k = 2 yields the 6-bit vector [101100], which encodes the unsigned number 11 . 4 = 44.
+
+#### Principle: **Unsigned multiplication by a power of 2**
+
+![](assets/2023-12-25-17-43-33.png)
+
+Note that multiplying by a power of 2 can cause overflow with either unsigned or two’s-complement arithmetic. Our result shows that even then we will get the same effect by shifting. Returning to our earlier example, we shifted the 4-bit pattern [1011] (numeric value 11) left by two positions to get [101100] (numeric value 44). Truncating this to 4 bits gives [1100] (numeric value 12 = 44 mod 16).
+
+Given that integer multiplication is more costly than shifting and adding, many C compilers try to remove many cases where an integer is being multiplied by a constant with combinations of shifting, adding, and subtracting.
+
+Of course, the trade-off between using combinations of shifting, adding, and subtracting versus a single multiplication instruction depends on the relative speeds of these instructions, and these can be highly machine dependent. Most compilers only perform this optimization when a small number of shifts, adds, and subtractions suffice.
+
+### 2.3.7 Dividing by Powers of 2
+
+Integer division on most machines is even slower than integer multiplication— requiring 30 or more clock cycles. Dividing by a power of 2 can also be performed using shift operations, but we use a right shift rather than a left shift. The two different right shifts—logical and arithmetic—serve this purpose for unsigned and two’s-complement numbers, respectively.
+
+![](assets/2023-12-25-17-50-11.png)
+
+![](assets/2023-12-25-17-53-53.png)
+
+#### Principle: **Unsigned division by a power of 2**
+
+![](assets/2023-12-25-17-53-05.png)
+
+![](assets/2023-12-25-17-54-40.png)
+
+The case for dividing by a power of 2 with two’s-complement arithmetic is slightly more complex. First, the shifting should be performed using an arithmetic right shift, to ensure that negative values remain negative.
+
+#### Principle: **Two’s-complement division by a power of 2, rounding down**
+
+![](assets/2023-12-25-17-57-03.png)
+
+We can correct for the improper rounding that occurs when a negative number is shifted right by “biasing” the value before shifting.
+
+#### Principle: **Two’s-complement division by a power of 2, rounding up** 
+
+![](assets/2023-12-25-17-59-27.png)
+
+![](assets/2023-12-25-17-59-41.png)
+
+Figure 2.30 demonstrates how adding the appropriate bias before performing the arithmetic right shift causes the result to be correctly rounded.
+
+We now see that division by a power of 2 can be implemented using logical or arithmetic right shifts. This is precisely the reason the two types of right shifts are available on most machines. Unfortunately, this approach does not generalize to
+division by arbitrary constants. Unlike multiplication, we cannot express division by arbitrary constants K in terms of division by powers of 2.
+
+### 2.3.8 Final Thought on Integer Arithmetic
+
+The “integer” arithmetic performed by computers is really a form of modular arithmetic. The finite word size used to represent numbers limits the range of possible values, and the resulting operations can overflow.
+
+The two’s-complement representation provides a clever way to represent both negative and positive values, while using the same bit-level implementations as are used to perform unsigned arithmetic—operations such as addition, subtraction, multiplication, and even division have either identical or very similar bit-level behaviors, whether the operands are in unsigned or two’s complement form.
+
+Some of the conventions in the C language can yield some surprising results, and these can be sources of bugs that are hard to recognize or understand. We have especially seen that the `unsigned` data type, while conceptually straightforward, can lead to behaviors that even experienced programmers do not expect. We have also seen that this data type can arise in unexpected ways—for example, when writing integer constants and when invoking library routines.
+
+## 2.4 Floating Point
+
+A floating-point representation encodes rational numbers of the form V = x × 2y. It is useful for performing computations involving very large numbers (|V| >> 0), numbers very close to 0 (|V| << 1), and more generally as an approximation to real arithmetic.
+
+Up until the 1980s, every computer manufacturer devised its own conventions for how floating-point numbers were represented and the details of the operations performed on them. In addition, they often did not worry too much about the accuracy of the operations, viewing speed and ease of implementation as being more critical than numerical precision.
+
+All of this changed around 1985 with the advent of IEEE Standard 754, a carefully crafted standard for representing floating-point numbers and the operations performed on them. This effort started in 1976 under Intel’s sponsorship with the design of the 8087, a chip that provided floating-point support for the 8086 processor. Intel hired William Kahan, a professor at the University of California, Berkeley, as a consultant to help design a floating-point standard for its future processors. They allowed Kahan to join forces with a committee generating an industry-wide standard under the auspices of the Institute of Electrical and Electronics Engineers (IEEE). The committee ultimately adopted a standard close to the one Kahan had devised for Intel. Nowadays, virtually all computers support what has become known as IEEE floating point. This has greatly improved the portability of scientific application programs across different machines.
+
+### 2.4.1 Fractional Binary Numbers
