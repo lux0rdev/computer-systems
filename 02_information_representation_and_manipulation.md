@@ -554,4 +554,114 @@ Up until the 1980s, every computer manufacturer devised its own conventions for 
 
 All of this changed around 1985 with the advent of IEEE Standard 754, a carefully crafted standard for representing floating-point numbers and the operations performed on them. This effort started in 1976 under Intel’s sponsorship with the design of the 8087, a chip that provided floating-point support for the 8086 processor. Intel hired William Kahan, a professor at the University of California, Berkeley, as a consultant to help design a floating-point standard for its future processors. They allowed Kahan to join forces with a committee generating an industry-wide standard under the auspices of the Institute of Electrical and Electronics Engineers (IEEE). The committee ultimately adopted a standard close to the one Kahan had devised for Intel. Nowadays, virtually all computers support what has become known as IEEE floating point. This has greatly improved the portability of scientific application programs across different machines.
 
+>The Institute of Electrical and Electronics Engineers (IEEE—pronounced “eye-triple-ee”) is a professional society that encompasses all of electronic and computer technology. It publishes journals, sponsors conferences, and sets up committees to define standards on topics ranging from power transmission to software engineering. Another example of an IEEE standard is the 802.11 standard for wireless networking.
+
 ### 2.4.1 Fractional Binary Numbers
+
+Decimal notation uses a representation of the form:
+
+![](assets/2023-12-26-18-52-01.png)
+
+where each decimal digit d<sub>i</sub> ranges between 0 and 9. This notation represents a value d defined as
+
+![](assets/2023-12-26-18-52-35.png)
+
+The weighting of the digits is defined relative to the decimal point symbol (‘.’), meaning that digits to the left are weighted by nonnegative powers of 10, giving integral values, while digits to the right are weighted by negative powers of 10, giving fractional values.
+
+For example, 12.3410 represents the number 1 × 10<sup>1</sup> + 2 × 10<sup>0</sup> + 3 × 10<sup>-1</sup> + 4 × 10<sup>-2</sup> = 12 34/100 .
+
+By analogy, consider a notation of the form
+
+![](assets/2023-12-26-18-57-00.png)
+
+where each binary digit, or bit, b<sub>i</sub> ranges between 0 and 1:
+
+![](assets/2023-12-26-18-58-05.png)
+
+This notation represents a number b defined as
+
+![](assets/2023-12-26-18-58-22.png)
+
+The symbol ‘.’ now becomes a binary point, with bits on the left being weighted by nonnegative powers of 2, and those on the right being weighted by negative powers of 2.
+
+For example, 101.112 represents the number 1× 2<sup>2</sup> + 0 × 2<sup>1</sup> + 1× 2<sup>0</sup> + 1× 2<sup>-1</sup> + 1× 2<sup>-2</sup> = 4 + 0 + 1+ 1/2 + 1/4 = 5 3/4 .
+
+Shifting the binary point one position to the left has the effect of dividing the number by 2.
+
+Note that numbers of the form 0.11 . . . 1<sub>2</sub> represent numbers just below 1.
+
+Assuming we consider only finite-length encodings, decimal notation cannot represent numbers such as 1/3 and 5/7 exactly. Similarly, fractional binary notation can only represent numbers that can be written x × 2<sup>y</sup>. Other values can only be approximated. For example, the number 1/5 can be represented exactly as the fractional decimal number 0.20. As a fractional binary number, however, we cannot represent it exactly and instead must approximate it with increasing accuracy by lengthening the binary representation:
+
+![](assets/2023-12-26-19-03-23.png)
+
+### 2.4.2 IEE Floating-Point Representation
+
+Positional notation such as considered in the previous section would not be efficient for representing very large numbers. For example, the representation of 5 × 2<sup>100</sup> would consist of the bit pattern 101 followed by 100 zeros. Instead, we would like to represent numbers in a form x × 2<sup>y</sup> by giving the values of x and y.
+
+![](assets/2023-12-26-19-05-26.png)
+
+- The _sign s_ determines whether the number is negative (s = 1) or positive (s = 0), where the interpretation of the sign bit for numeric value 0 is handled as a special case. 
+- The _significand M_ is a fractional binary number that ranges either between 1 and 2 - ε or between 0 and 1- ε.
+- The _exponent E_ weights the value by a (possibly negative) power of 2.
+
+![](assets/2023-12-26-19-07-28.png)
+
+The bit representation of a floating-point number is divided into three fields to
+encode these values:
+
+- The single sign bit `s` directly encodes the sign _s_.
+- The k-bit exponent field `exp` = e<sub>k-1</sub> . . . e<sub>1</sub>e<sub>0</sub> encodes the exponent _E_.
+- The n-bit fraction field `frac` = f<sub>n-1</sub> . . . f<sub>1</sub>f<sub>0</sub> encodes the _significand M_, but the value encoded also depends on whether or not the exponent field equals 0.
+
+The value encoded by a given bit representation can be divided into three different cases (the latter having two variants), depending on the value of exp:
+
+![](assets/2023-12-26-19-15-32.png)
+
+#### Case 1: Normalized Values
+
+This is the most common case. It occurs when the bit pattern of exp is neither all zeros (numeric value 0) nor all ones (numeric value 255 for single precision, 2047 for double). 
+
+- The exponent field is interpreted as representing a signed integer in **biased** form. That is, the exponent value is E = e - Bias, where e is the unsigned number having bit representation e<sub>k-1</sub> . . . e<sub>1</sub>e<sub>0</sub> and Bias is a bias value equal to 2<sup>k-1</sup> - 1 (127 for single precision and 1023 for double). This yields exponent ranges from -126 to +127 for single precision and -1022 to +1023 for double precision.
+
+- The fraction field `frac` is interpreted as representing the fractional value f , where 0 <= f < 1, having binary representation 0.f<sup>n-1</sup> . . . f<sup>1</sup>f<sup>0</sup>, that is, with the binary point to the left of the most significant bit. The significand is defined to be M = 1 + f . 
+
+#### Case 2: Denormalized Values
+
+When the exponent field is all zeros, the represented number is in denormalized form. In this case, the exponent value is E = 1 - Bias, and the significand value is M = f, that is, the value of the fraction field without an implied leading 1.
+
+- Denormalized numbers serve two purposes. First, they provide a way to represent numeric value 0, since with a normalized number we must always have M . 1, and hence we cannot represent 0. In fact, the floating-point representation of +0.0 has a bit pattern of all zeros: the sign bit is 0, the exponent field is all zeros (indicating a denormalized value), and the fraction field is all zeros, giving M = f = 0.
+
+- Denormalized numbers serve two purposes. First, they provide a way to represent numeric value 0, since with a normalized number we must always have M . 1, and hence we cannot represent 0. In fact, the floating-point representation of +0.0 has a bit pattern of all zeros: the sign bit is 0, the exponent field is all zeros (indicating a denormalized value), and the fraction field is all zeros, giving M = f = 0. (Curiously, when the sign bit is 1, but the other fields are all zeros, we get the value -0.0)
+
+#### Case 3: Special Values
+
+A final category of values occurs when the exponent field is all ones. When the fraction field is all zeros, the resulting values represent infinity, either +∞ when s = 0 or -∞ when s = 1. Infinity can represent results that overflow, as when we multiply two very large numbers, or when we divide by zero. When the fraction field is nonzero, the resulting value is called a **NaN**, short for Not a Number. Such values are returned as the result of an operation where the result cannot be given as a real number or as infinity, as when computing the square root of -1 or -∞. They can also be useful in some applications for representing uninitialized data.
+
+### 2.4.3 Example Numbers
+
+### 2.4.4 Rounding
+
+Floating-point arithmetic can only approximate real arithmetic, since the representation has limited range and precision. Thus, for a value x, we generally want a systematic method of finding the “closest” matching value x' that can be represented in the desired floating-point format. This is the task of the **rounding operation**. 
+
+One key problem is to define the direction to round a value that is halfway between two possibilities.
+
+The IEEE floating-point format defines four different rounding modes. The default method finds a closest match, while the other three can be used for computing upper and lower bounds.
+
+![](assets/2023-12-28-18-10-18.png)
+
+- Round-to-even (also called round-to-nearest) is the default mode. It attempts to find a closest match. Round-to-even mode adopts the convention that it rounds the number either upward or downward such that the least significant digit of the result is even. Thus, it rounds both $1.50 and $2.50 to $2.
+
+Rounding toward even numbers avoids a statistical bias in most real-life situations. It will round upward about 50% of the time and round downward about 50% of the time.
+
+Round-to-even rounding can be applied even when we are not rounding to a whole number. We simply consider whether the least significant digit is even or odd.
+
+Round-to-even rounding can be applied to binary fractional numbers. We consider least significant bit value 0 to be even and 1 to be odd. In general, the rounding mode is only significant when we have a bit pattern of the form XX . . . X.Y Y . . . Y100 . . ., where X and Y denote arbitrary bit values with the rightmost Y being the position to which we wish to round. Only bit patterns of this form denote values that are halfway between two possible results.
+
+The other three modes produce guaranteed bounds on the actual value. These can be useful in some numerical applications.
+
+- Round-toward-zero mode rounds positive numbers downward and negative numbers upward, giving a value ˆx such that |ˆx| <= |x|.
+- Round-down mode rounds both positive and negative numbers downward, giving a value x − such that x − ≤ x. 
+- Round-up mode rounds both positive and negative numbers upward, giving a value x + such that x ≤ x+.
+
+### 2.4.5 Floating Point Operations
+
