@@ -665,3 +665,83 @@ The other three modes produce guaranteed bounds on the actual value. These can b
 
 ### 2.4.5 Floating Point Operations
 
+The IEEE standard specifies a simple rule for determining the result of an arithmetic operation ☉ such as addition or multiplication. Viewing floating-point values x and y as real numbers, and some operation defined over real numbers, the computation should yield Round(x ☉ y), the result of applying rounding to the exact result of the real operation.
+
+In practice, there are clever tricks floating-point unit designers use to avoid performing this exact computation, since the  computation need only be sufficiently precise to guarantee a correctly rounded result.
+
+One strength of the IEEE standard’s method of specifying the behavior of floating-point operations is that it is independent of any particular hardware or software realization.
+
+#### Floating-point addition
+
+Addition over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
+
+Let us define x +f y to be Round(x + y). This operation is defined for all values of x and y, although it may yield infinity even when both x and y are real numbers due to overflow. The operation **is commutative**, with x +f y = y +f x for all values of x and y. **On the other hand, the operation is not associative**.
+
+>The lack of associativity in floating-point addition is the most important group property that is lacking. It has important implications for scientific programmers and compiler writers.
+
+Suppose a compiler is given the following code fragment:
+
+```
+x = a + b + c;
+y = b + c + d; 
+```
+
+The compiler might be tempted to save one floating-poing addition by generating the following code:
+
+```
+t = b + c;
+x = a + t;
+y = t + d;
+```
+
+However, this computation might yield a different value for x than would the original, since it uses a different association of the addition operations. In most applications, the difference would be so small as to be inconsequential. Unfortunately, compilers have no way of knowing what trade-offs the user is willing to make between efficiency and faithfulness to the exact behavior of the original program. As a result, they tend to be very conservative, avoiding any optimizations that could have even the slightest effect on functionality.
+
+Onthe other hand, floating-point addition satisfies the following monotonicity property: if a ≥ b, then x +f a ≥ x +f b for any values of a, b, and x other than NaN. This property of real (and integer) addition is not obeyed by unsigned or two’scomplement
+addition.
+
+#### Floating-point Multiplication
+
+Floating-point multiplication also obeys many of the properties one normally associates with multiplication. Let us define x *f y to be Round(x × y). This operation is closed under multiplication (although possibly yielding infinity or NaN), it is commutative, and it has 1.0 as a multiplicative identity. On the other hand, **it is not associative**, due to the possibility of overflow or the loss of precision due to rounding.
+
+Floating-point multiplication does not distribute over addition (For example, with single-precision floating point, the expression `1e20*(1e20-1e20)` evaluates to `0.0`, while `1e20*1e20-1e20*1e20` evaluates to `NaN`.)
+
+Floating-point multiplication satisfies the following monotonicity properties for any values of a, b, and c other than NaN:
+
+![](assets/2023-12-29-20-49-02.png)
+
+We are also guaranteed that a *f a ≥ 0, as long as a != NaN. As we saw earlier, none of these monotonicity properties hold for unsigned or two’s complement multiplication.
+
+>This lack of associativity and distributivity is of serious concern to scientific programmers and to compiler writers. Even such a seemingly simple task as writing code to determine whether two lines intersect in three-dimensional space can be a major challenge.
+
+### 2.4.6 Floating Point in C
+
+All versions of C provide two different floating-point data types: float and double. On machines that support IEEE floating point, these data types correspond to single- and double-precision floating point. In addition, the machines use the round-to-even rounding mode.
+
+Unfortunately, since the C standards do not require the machine to use IEEE floating point, there are no standard methods to change the rounding mode or to get special values such as -0, +Inf, -Inf, or NaN. Most systems provide a combination of include (`.h`) files and procedure libraries to provide access to these features, but the details vary from one system to another.
+
+#### Casting rules in C (for type `int` being 32 bits)
+
+- From int to float, the number cannot overflow, but it may be rounded. 
+- From int or float to double, the exact numeric value can be preserved because double has both greater range (i.e., the range of representable values), as well as greater precision (i.e., the number of significant bits). 
+- From double to float, the value can overflow to +Inf or -Inf, since the range is smaller. Otherwise, it may be rounded, because the precision is smaller. 
+- From float or double to int, the value will be rounded toward zero. For example, 1.999 will be converted to 1, while -1.999 will be converted to -1. Furthermore, the value may overflow. The C standards do not specify a fixed result for this case. Intel-compatible microprocessors designate the bit pattern [10 . . . 00] (TMin<sub>w</sub> for word size w) as an **integer indefinite** value. Any conversion from floating point to integer that cannot assign a reasonable integer approximation yields this value. Thus, the expression `(int) +1e10` yields `-21483648`, generating a negative value from a positive one.
+
+## 2.5 Summary
+
+Computers encode information as bits, generally organized as sequences of bytes. Different encodings are used for representing integers, real numbers, and character strings. Different models of computers use different conventions for encoding numbers and for ordering the bytes within multi-byte data. 
+
+The C language is designed to accommodate a wide range of different implementations in terms of word sizes and numeric encodings. Machines with 64-bit word sizes have become increasingly common, replacing the 32-bit machines that dominated the market for around 30 years. Because 64-bit machines can also run programs compiled for 32-bit machines, we have focused on the distinction between 32- and 64-bit programs, rather than machines. The advantage of 64-bit programs is that they can go beyond the 4 GB address limitation of 32-bit programs. 
+
+Most machines encode signed numbers using a two’s-complement representation and encode floating-point numbers using IEEE Standard 754. Understanding these encodings at the bit level, as well as understanding the mathematical characteristics of the arithmetic operations, is important for writing programs that operate correctly over the full range of numeric values.
+
+When casting between signed and unsigned integers of the same size, most C implementations follow the convention that the underlying bit pattern does not change. On a two’s-complement machine, this behavior is characterized by functions T2Uw and U2Tw, for aw-bit value. The implicit casting ofCgives results that many programmers do not anticipate, often leading to program bugs. 
+
+Due to the finite lengths of the encodings, computer arithmetic has properties quite different from conventional integer and real arithmetic. The finite length can cause numbers to overflow, when they exceed the range of the representation. Floating-point values can also underflow, when they are so close to 0.0 that they are changed to zero.
+
+The finite integer arithmetic implemented by C, as well as most other programming languages, has some peculiar properties compared to true integer arithmetic. For example, the expression `x * x` can evaluate to a negative number due to overflow. Nonetheless, both unsigned and two’s-complement arithmetic satisfy many of the other properties of integer arithmetic, including associativity, commutativity, and distributivity. This allows compilers to do many optimizations. For example, in replacing the expression `7*x` by `(x<<3)-x`, we make use of the associative, commutative, and distributive properties, along with the relationship between shifting and multiplying by powers of 2.
+
+We have seen several clever ways to exploit combinations of bit-level operations and arithmetic operations. For example, we saw that with two’s-complement arithmetic, ~x+1 is equivalent to -x. As another example, suppose we want a bit pattern of the form [0, . . . , 0, 1, . . . , 1], consisting of w - k zeros followed by k ones. Such bit patterns are useful for masking operations. This pattern can be generated by the C expression `(1<<k)-1`, exploiting the property that the desired bit pattern has numeric value 2<sup>k</sup> - 1. For example, the expression `(1<<8)-1` will generate the bit pattern 0xFF.
+
+Floating-point representations approximate real numbers by encoding numbers of the form x × 2<sup>y</sup>. IEEE Standard 754 provides for several different precisions, with the most common being single (32 bits) and double (64 bits). IEEE floating point also has representations for special values representing plus and minus infinity, as well as not-a-number.
+
+Floating-point arithmetic must be used very carefully, because it has only limited range and precision, and because it does not obey common mathematical properties such as associativity.
