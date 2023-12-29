@@ -2,36 +2,37 @@
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
-- [01: A Tour of Computer Systems](#01-a-tour-of-computer-systems)
-   * [1.1 Information Is Bits + Context](#11-information-is-bits-context)
-   * [1.2 Programs Are Translated by Other Programs into Different Forms](#12-programs-are-translated-by-other-programs-into-different-forms)
-   * [1.3 It Pays to Understand How Compilation Systems Work](#13-it-pays-to-understand-how-compilation-systems-work)
-   * [1.4 Processors Read and Interpret Instructions Stored in Memory](#14-processors-read-and-interpret-instructions-stored-in-memory)
-   * [1.4.1 Hardware Organization of a System](#141-hardware-organization-of-a-system)
-      + [Buses](#buses)
-      + [I/O Devices](#io-devices)
-      + [Main Memory](#main-memory)
-      + [Processor](#processor)
-   * [1.5 Caches Matter](#15-caches-matter)
-   * [1.6 Storage Devices Form a Hierarchy](#16-storage-devices-form-a-hierarchy)
-   * [1.7 The Operating System Manages the Hardware](#17-the-operating-system-manages-the-hardware)
-      + [1.7.1 Processes](#171-processes)
-      + [1.7.2 Threads](#172-threads)
-      + [1.7.3 Virtual Memory](#173-virtual-memory)
-      + [1.7.4 Files](#174-files)
-   * [1.8 Systems Communicate with Other Systems Using Networks](#18-systems-communicate-with-other-systems-using-networks)
-   * [1.9 Important Themes](#19-important-themes)
-      + [1.9.1 Amdahl's Law](#191-amdahls-law)
-      + [1.9.2 Concurrency and Parallelism](#192-concurrency-and-parallelism)
-         - [Thread Level Concurrency](#thread-level-concurrency)
-         - [Instruction Level Parallelism](#instruction-level-parallelism)
-         - [Single instruction, Multiple-Data(SIMD) Parallelism](#single-instruction-multiple-datasimd-parallelism)
-      + [1.9.3 The Importance of Abstractions in Computer Systems](#193-the-importance-of-abstractions-in-computer-systems)
-   * [1.10 Summary](#110-summary)
+- [1.0 Introduction](#10-introduction)
+- [1.1 Information Is Bits + Context](#11-information-is-bits-context)
+- [1.2 Programs Are Translated by Other Programs into Different Forms](#12-programs-are-translated-by-other-programs-into-different-forms)
+- [1.3 It Pays to Understand How Compilation Systems Work](#13-it-pays-to-understand-how-compilation-systems-work)
+- [1.4 Processors Read and Interpret Instructions Stored in Memory](#14-processors-read-and-interpret-instructions-stored-in-memory)
+- [1.4.1 Hardware Organization of a System](#141-hardware-organization-of-a-system)
+   * [Buses](#buses)
+   * [I/O Devices](#io-devices)
+   * [Main Memory](#main-memory)
+   * [Processor](#processor)
+- [1.5 Caches Matter](#15-caches-matter)
+- [1.6 Storage Devices Form a Hierarchy](#16-storage-devices-form-a-hierarchy)
+- [1.7 The Operating System Manages the Hardware](#17-the-operating-system-manages-the-hardware)
+   * [1.7.1 Processes](#171-processes)
+   * [1.7.2 Threads](#172-threads)
+   * [1.7.3 Virtual Memory](#173-virtual-memory)
+   * [1.7.4 Files](#174-files)
+- [1.8 Systems Communicate with Other Systems Using Networks](#18-systems-communicate-with-other-systems-using-networks)
+- [1.9 Important Themes](#19-important-themes)
+   * [1.9.1 Amdahl's Law](#191-amdahls-law)
+   * [1.9.2 Concurrency and Parallelism](#192-concurrency-and-parallelism)
+      + [Thread Level Concurrency](#thread-level-concurrency)
+      + [Instruction Level Parallelism](#instruction-level-parallelism)
+      + [Single instruction, Multiple-Data(SIMD) Parallelism](#single-instruction-multiple-datasimd-parallelism)
+   * [1.9.3 The Importance of Abstractions in Computer Systems](#193-the-importance-of-abstractions-in-computer-systems)
+- [1.10 Summary](#110-summary)
 
 <!-- TOC end -->
 
-<!-- TOC --><a name="01-a-tour-of-computer-systems"></a>
+<!-- TOC --><a name="10-introduction"></a>
+## 1.0 Introduction
 
 A computer system consists of hardware and systems software that work together to run application programs. Specific implementations of system change over time, but the underlying concepts do not. All computer systems have similar hardware and software components that perform similar functions.
 
@@ -47,6 +48,7 @@ int main()
 }
 ```
 
+<!-- TOC --><a name="11-information-is-bits-context"></a>
 ## 1.1 Information Is Bits + Context
 
 The program begins life as a _source program_ or _source file_. The source program is a sequence of bits (each with a value of 0 or 1) organized in 8-bit chunks called _bytes_. Each byte represents some text character in the program.
@@ -57,6 +59,7 @@ All information in a system-including disk files, programs stored in memory, use
 
 We need to understand machine representations of numbers; they are not the same as real integers and real numbers. They are finite approximations that can behave in unexpected ways.
 
+<!-- TOC --><a name="12-programs-are-translated-by-other-programs-into-different-forms"></a>
 ## 1.2 Programs Are Translated by Other Programs into Different Forms
 
 The program begins life as a high-level C program because it can be read and understood by human beings; the individual C statements must be translated by other programs into a sequence of low-level machine_language instructions. These instructions are then packaged in a form called an executable object program and stored as a binary disk file. Object programs are also referred as executable object files.
@@ -72,6 +75,7 @@ The translation is performed in the sequence of four phases:
 - Assembly: the assembler (as) translates the file into machine-language instructions, packages them in a form known as a relocatable object program, and stores in another file.
 - Linking: In this phase, functions that reside in separate pre-compiled object files, like `printf`, part of the standard C library, needs to be merged with the file. The resulting file is an executable object file ready to be loaded into memory and executed by the system.
 
+<!-- TOC --><a name="13-it-pays-to-understand-how-compilation-systems-work"></a>
 ## 1.3 It Pays to Understand How Compilation Systems Work
 
 There are three main reasons why programmers need to understand how compilation systems work:
@@ -89,6 +93,7 @@ There are three main reasons why programmers need to understand how compilation 
 > buffer overﬂow vulnerabilities have accounted for many of the security holes in network and Internet servers. These vulnerabilities exist because too few programmers understand the need
 to carefully restrict the quantity and forms of data they accept from untrusted sources. A ﬁrst step in learning secure programming is to understand the consequences of the way data and control information are stored on the program stack. 
 
+<!-- TOC --><a name="14-processors-read-and-interpret-instructions-stored-in-memory"></a>
 ## 1.4 Processors Read and Interpret Instructions Stored in Memory
 
 To run the executable ﬁle on a Unix system, we type its name to an application program known as a _shell_:
@@ -101,14 +106,17 @@ linux>
 
 The shell is a command-line interpreter that prints a prompt, waits for you to type a command line, and then performs the command. If the ﬁrst word of the command line does not correspond to a built-in shell command, then the shell assumes that it is the name of an executable ﬁle that it should load and run.
 
+<!-- TOC --><a name="141-hardware-organization-of-a-system"></a>
 ## 1.4.1 Hardware Organization of a System
 
 ![1.4](./assets/2.png)
 
+<!-- TOC --><a name="buses"></a>
 ### Buses
 
 Running throughout the system is a collection of electrical conduits called **buses** that carry bytes of information back and forth between the components. Buses are typically designed to transfer fixed-size chunks of bytes known as **words**. The number of bytes in a word (the word size) is a fundamental system parameter that varies across systems. Most machines today have word sizes of either 4 bytes (32 bits) or 8 bytes (64 bits).
 
+<!-- TOC --><a name="io-devices"></a>
 ### I/O Devices
 
 Input/output (I/O) devices are the system’s connection to the external world.
@@ -118,6 +126,7 @@ Each I/O device is connected to the I/O bus by either a **controller** or an **a
 - Controllers are chip sets in the device itself or on the system’s main printed circuit board (often called the motherboard). 
 - An adapter is a card that plugs into a slot on the motherboard. Regardless, the purpose of each is to transfer information back and forth between the I/O bus and an I/O device.
 
+<!-- TOC --><a name="main-memory"></a>
 ### Main Memory
 
 The main memory is a temporary storage device that holds both a _program_ and the _data_ it manipulates while the processor is executing the program.
@@ -127,6 +136,7 @@ The main memory is a temporary storage device that holds both a _program_ and th
 
 In general, each of the machine instructions that constitute a program (a set of instructions) can consist of a variable number of bytes. The sizes of data items that correspond to C program variables vary according to type.
 
+<!-- TOC --><a name="processor"></a>
 ### Processor
 
 The central processing unit (**CPU**), or simply **processor**, is the engine that interprets (or executes) instructions stored in main memory. At its core is a word-size storage device (or **register**) called the **program counter** (PC). At any point in time, the PC **points at** (contains the address of) some machine-language instruction in main memory.
@@ -144,6 +154,7 @@ Here are some examples of the simple operations that the CPU might carry out at 
 
 Modern processors use far more complex mechanisms to speed up program execution. Thus, we can distinguish the pro- cessor’s instruction set architecture, describing the effect of each machine-code instruction, from its microarchitecture, describing how the processor is actually implemented.
 
+<!-- TOC --><a name="15-caches-matter"></a>
 ## 1.5 Caches Matter
 
 A system spends a lot of time moving information from one place to another. The machine instructions in the program are originally stored on disk. When the program is loaded, they are copied to main memory. As the processor runs the program, instructions are copied from main memory into the processor. Similarly, the data string `hello, world\n`, originally on disk, is copied to main memory and then copied from main memory to the display device. From a programmer’s perspective, much of this copying is overhead that slows down the “real work” of the program. Thus, a major goal for system designers is to make these copy operations run as fast as possible.
@@ -162,10 +173,12 @@ One of the most important lessons in this book is that application _programmers 
 
 ![1.9](./assets/3.png)
 
+<!-- TOC --><a name="16-storage-devices-form-a-hierarchy"></a>
 ## 1.6 Storage Devices Form a Hierarchy
 
 The storage devices in every computer system are organized as a **memory hierarchy**. The main idea of a memory hierarchy is that storage at one level serves as a cache for storage at the next lower level. Thus, the register file is a cache for the L1 cache. Caches L1 and L2 are caches for L2 and L3, respectively. The L3 cache is a cache for the main memory, which is a cache for the disk. On some networked systems with distributed file systems, the local disk serves as a cache for data stored on the disks of other systems.
 
+<!-- TOC --><a name="17-the-operating-system-manages-the-hardware"></a>
 ## 1.7 The Operating System Manages the Hardware
 
 ![1.10-11](./assets/4.png)
@@ -183,6 +196,7 @@ The operating system achieves both goals via the fundamental abstractions shown 
 - virtual memory is an abstraction for both the main memory and disk I/O devices, 
 - processes are abstractions for the processor, main memory, and I/O devices.
 
+<!-- TOC --><a name="171-processes"></a>
 ### 1.7.1 Processes
 
 A process is the operating system’s abstraction for a running program. Multiple processes can run concurrently on the same system, and each process appears to have exclusive use of the hardware. By concurrently, we mean that the instruc- tions of one process are interleaved with the instructions of another process. In most systems, there are more processes to run than there are CPUs to run them.
@@ -199,10 +213,12 @@ The transition from one process to another is managed by the operating system **
 
 Implementing the process abstraction requires close cooperation between both the low-level hardware and the operating system software.
 
+<!-- TOC --><a name="172-threads"></a>
 ### 1.7.2 Threads
 
 Although we normally think of a process as having a single control flow, in modern systems a process can actually consist of multiple execution units, called **threads**, each running in the context of the process and sharing the same code and global data. Threads are an increasingly important programming model because of the requirement for concurrency in network servers, because it is easier to share data between multiple threads than between multiple processes, and because threads are typically more efficient than processes. Multi-threading is also one way to make programs run faster when multiple processors are available.
 
+<!-- TOC --><a name="173-virtual-memory"></a>
 ### 1.7.3 Virtual Memory
 
 ![1.13](./assets/5.png)
@@ -221,20 +237,24 @@ The virtual address space seen by each process consists of a number of well-defi
 
 For virtual memory to work, a sophisticated interaction is required between the hardware and the operating system software, including a hardware translation of every address generated by the processor. The basic idea is to store the contents of a process’s virtual memory on disk and then use the main memory as a cache for the disk.
 
+<!-- TOC --><a name="174-files"></a>
 ### 1.7.4 Files
 
 A file is a sequence of bytes, nothing more and nothing less. Every I/O device, including disks, keyboards, displays, and even networks, is modeled as a file. All input and output in the system is performed by reading and writing files, using a small set of system calls known as Unix I/O.
 
 This simple and elegant notion of a file is nonetheless very powerful because it provides applications with a uniform view of all the varied I/O devices that might be contained in the system.
 
+<!-- TOC --><a name="18-systems-communicate-with-other-systems-using-networks"></a>
 ## 1.8 Systems Communicate with Other Systems Using Networks
 
 In practice, modern systems are often linked to other systems by networks. From the point of view of an individual system, the network can be viewed as just another I/O device. When the system copies a sequence of bytes from main memory to the network adapter, the data flow across the network to another machine, instead of, say, to a local disk drive. Similarly, the system can read data sent from other machines and copy these data to its main memory.
 
+<!-- TOC --><a name="19-important-themes"></a>
 ## 1.9 Important Themes
 
 A system is more than just hardware. It is a collection of intertwined hardware and systems software that must cooperate in order to achieve the ultimate goal of running application programs.
 
+<!-- TOC --><a name="191-amdahls-law"></a>
 ### 1.9.1 Amdahl's Law
 
 Gene Amdahl, one of the early pioneers in computing, made a simple but insightful observation about the effectiveness of improving the performance of one part of a system. This observation has come to be known as **Amdahl’s law**. The main idea is that when we speed up one part of a system, the effect on the overall system performance depends on both how significant this part was and how much it sped up. Consider a system in which executing some application requires time Told. Suppose some part of the system requires a fraction `a` of this time, and that we improve its performance by a factor of `k`. That is, the component originally required time `aTold`, and it now requires time `(aTold)/k`. The overall execution time would thus be 
@@ -254,10 +274,12 @@ This is the major insight of Amdahl’s law: to significantly speed up the entir
 
 > The best way to express a performance improvement is as a ratio of the form `Told/Tnew`, where `Told` is the time required for the original version and `Tnew` is the time required by the modifed version. This will be a number greater than 1.0 if any real improvement occurred. We use the sufix ‘×’ to indicate such a ratio, where the factor “2.2×” is expressed verbally as “2.2 times.”
 
+<!-- TOC --><a name="192-concurrency-and-parallelism"></a>
 ### 1.9.2 Concurrency and Parallelism
 
 We use the term **concurrency** to refer to the general concept of a system with multiple, simultaneous activities, and the term **parallelism** to refer to the use of concurrency to make a system run faster. Parallelism can be exploited at multiple levels of abstraction in a computer system. We highlight three levels here, working from the highest to the lowest level in the system hierarchy.
 
+<!-- TOC --><a name="thread-level-concurrency"></a>
 #### Thread Level Concurrency
 
 We are able to devise systems where multiple programs execute at the same time, leading to concurrency. With threads, we can even have multiple control flows executing within a single process.
@@ -278,12 +300,14 @@ The use of multiprocessing can improve system performance in two ways:
 
 Thus, although the principles of concurrency have been formulated and studied for over 50 years, the advent of multi-core and hyperthreaded systems has greatly increased the desire to find ways to write application programs that can exploit the thread-level parallelism available with the hardware.
 
+<!-- TOC --><a name="instruction-level-parallelism"></a>
 #### Instruction Level Parallelism
 
 At a much lower level of abstraction, modern processors can execute multiple instructions at one time, a property known as instruction-level parallelism. More recent processors can sustain execution rates of 2–4 instructions per clock cycle. Any given instruction requires much longer from start to finish, perhaps 20 cycles or more, but the processor uses a number of clever tricks to process as many as 100 instructions at a time.
 
 Processors that can sustain execution rates faster than 1 instruction per cycle are known as superscalar processors. Most modern processors support superscalar operation. Application programmers can use this model to understand the performance of their programs. They can then write programs such that the generated code achieves higher degrees of instruction-level parallelism and therefore runs faster.
 
+<!-- TOC --><a name="single-instruction-multiple-datasimd-parallelism"></a>
 #### Single instruction, Multiple-Data(SIMD) Parallelism
 
 At the lowest level, many modern processors have special hardware that allows a single instruction to cause multiple operations to be performed in parallel, a mode known as single-instruction, multiple-data (SIMD) parallelism.
@@ -291,6 +315,7 @@ At the lowest level, many modern processors have special hardware that allows a 
 These SIMD instructions are provided mostly to speed up applications that process image, sound, and video data. Although some compilers attempt to automatically extract SIMD parallelism from C programs, a more reliable method is to write programs using special vector data types supported in compilers such as gcc.
 
 
+<!-- TOC --><a name="193-the-importance-of-abstractions-in-computer-systems"></a>
 ### 1.9.3 The Importance of Abstractions in Computer Systems
 
 The use of abstractions is one of the most important concepts in computer science. For example, one aspect of good programming practice is to formulate a simple application program interface (API) for a set of functions that allow programmers to use the code without having to delve into its inner workings. Different programming languages provide different forms and levels of support for abstraction, such as Java class declarations and C function prototypes.
@@ -299,6 +324,7 @@ On the processor side, the instruction set architecture provides an abstraction 
 
 On the operating system side, we have introduced three abstractions: files as an abstraction of I/O devices, virtual memory as an abstraction of program memory, and processes as an abstraction of a running program. To these abstractions we add a new one: the virtual machine, providing an abstraction of the entire computer, including the operating system, the processor, and the programs.
 
+<!-- TOC --><a name="110-summary"></a>
 ## 1.10 Summary
 
 On the operating system side, we have introduced three abstractions: files as an abstraction of I/O devices, virtual memory as an abstraction of program memory, and processes as an abstraction of a running program. To these abstractions we add a new one: the virtual machine, providing an abstraction of the entire computer, including the operating system, the processor, and the programs
