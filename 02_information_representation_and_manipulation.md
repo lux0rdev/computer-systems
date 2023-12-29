@@ -1,3 +1,78 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [02: Representing and Manipulating Information](#02-representing-and-manipulating-information)
+   * [2.1 Information Storage](#21-information-storage)
+      + [2.1.1 Hexadecimal Notation](#211-hexadecimal-notation)
+      + [2.1.2 Data Sizes](#212-data-sizes)
+      + [2.1.3 Addressing and Byte Ordering](#213-addressing-and-byte-ordering)
+      + [2.1.4 Representing Strings](#214-representing-strings)
+      + [2.1.5 Representing Code](#215-representing-code)
+      + [2.1.6 Introduction to Boolean Algebra](#216-introduction-to-boolean-algebra)
+         - [Interesting! ](#interesting)
+      + [2.1.7 Bit-Level Operations in C](#217-bit-level-operations-in-c)
+      + [2.1.8 Logical Operations in C](#218-logical-operations-in-c)
+      + [2.1.9 Shift Operations in C](#219-shift-operations-in-c)
+   * [2.2 Integer Representations](#22-integer-representations)
+      + [Terminology Reference](#terminology-reference)
+      + [2.2.1 Integral Data Types](#221-integral-data-types)
+      + [2.2.2 Unsigned Encodings](#222-unsigned-encodings)
+         - [Principle: **Definition of unsigned encoding**](#principle-definition-of-unsigned-encoding)
+         - [Principle: **Uniqueness of unsigned encoding**](#principle-uniqueness-of-unsigned-encoding)
+      + [2.2.3 Two's Complement ](#223-twos-complement)
+         - [Principle: **Definition of two's-complement encoding**](#principle-definition-of-twos-complement-encoding)
+         - [Principle: **Uniqueness of two's complement encoding**](#principle-uniqueness-of-twos-complement-encoding)
+      + [2.2.4 Conversions between Signed and Unsigned](#224-conversions-between-signed-and-unsigned)
+         - [Principle: **Conversions from two's complement to unsigned**](#principle-conversions-from-twos-complement-to-unsigned)
+         - [Principle: **Conversion from unsigned to two's complement**](#principle-conversion-from-unsigned-to-twos-complement)
+      + [2.2.5 Signed versus Unsigned in C](#225-signed-versus-unsigned-in-c)
+      + [2.2.6 Expanding the Bit Representation of a Number](#226-expanding-the-bit-representation-of-a-number)
+         - [Principle: Expansion of an unsigned number by _zero_ extension](#principle-expansion-of-an-unsigned-number-by-_zero_-extension)
+         - [Principle: Expansion of a two's-complement number by _sign_ extension](#principle-expansion-of-a-twos-complement-number-by-_sign_-extension)
+      + [2.2.7 Truncating Numbers](#227-truncating-numbers)
+         - [Principle: **Truncation of an unsigned number**](#principle-truncation-of-an-unsigned-number)
+         - [Principle: **Truncation of a two's-complement number**](#principle-truncation-of-a-twos-complement-number)
+      + [2.2.8 Advice on Signed versus Unsigned](#228-advice-on-signed-versus-unsigned)
+   * [2.3 Integer Arithmetic](#23-integer-arithmetic)
+      + [2.3.1 Unsigned Addition](#231-unsigned-addition)
+         - [Principle: **Unsigned addition**](#principle-unsigned-addition)
+         - [Principle: **Detecting overflow of unsigned addition**](#principle-detecting-overflow-of-unsigned-addition)
+         - [Principle: **Unsigned negation**](#principle-unsigned-negation)
+      + [2.3.2 Two's-Complement Addition](#232-twos-complement-addition)
+         - [Principle: **Two's complement addition**](#principle-twos-complement-addition)
+         - [Principle: **Detecting overflow in two's-complement addition**](#principle-detecting-overflow-in-twos-complement-addition)
+      + [2.3.3 Two's-Complement Negation](#233-twos-complement-negation)
+         - [Principle: **Two's complement negation**](#principle-twos-complement-negation)
+      + [2.3.4 Unsigned Multiplication](#234-unsigned-multiplication)
+         - [Principle: **Unsigned multiplicaiton**](#principle-unsigned-multiplicaiton)
+      + [2.3.5 Two's Complement Multiplication](#235-twos-complement-multiplication)
+         - [Principle: **Two's complement multiplication**](#principle-twos-complement-multiplication)
+         - [Principle: **Bit-level equivalence of unsigned and two's complement multiplication**](#principle-bit-level-equivalence-of-unsigned-and-twos-complement-multiplication)
+      + [2.3.6 Multiplying by Constants](#236-multiplying-by-constants)
+         - [Principle: **Multiplication by a power of 2**](#principle-multiplication-by-a-power-of-2)
+         - [Principle: **Unsigned multiplication by a power of 2**](#principle-unsigned-multiplication-by-a-power-of-2)
+      + [2.3.7 Dividing by Powers of 2](#237-dividing-by-powers-of-2)
+         - [Principle: **Unsigned division by a power of 2**](#principle-unsigned-division-by-a-power-of-2)
+         - [Principle: **Two’s-complement division by a power of 2, rounding down**](#principle-twos-complement-division-by-a-power-of-2-rounding-down)
+         - [Principle: **Two’s-complement division by a power of 2, rounding up** ](#principle-twos-complement-division-by-a-power-of-2-rounding-up)
+      + [2.3.8 Final Thought on Integer Arithmetic](#238-final-thought-on-integer-arithmetic)
+   * [2.4 Floating Point](#24-floating-point)
+      + [2.4.1 Fractional Binary Numbers](#241-fractional-binary-numbers)
+      + [2.4.2 IEE Floating-Point Representation](#242-iee-floating-point-representation)
+         - [Case 1: Normalized Values](#case-1-normalized-values)
+         - [Case 2: Denormalized Values](#case-2-denormalized-values)
+         - [Case 3: Special Values](#case-3-special-values)
+      + [2.4.3 Example Numbers](#243-example-numbers)
+      + [2.4.4 Rounding](#244-rounding)
+      + [2.4.5 Floating Point Operations](#245-floating-point-operations)
+         - [Floating-point addition](#floating-point-addition)
+         - [Floating-point Multiplication](#floating-point-multiplication)
+      + [2.4.6 Floating Point in C](#246-floating-point-in-c)
+         - [Casting rules in C (for type `int` being 32 bits)](#casting-rules-in-c-for-type-int-being-32-bits)
+   * [2.5 Summary](#25-summary)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="02-representing-and-manipulating-information"></a>
 # 02: Representing and Manipulating Information
 
 Modern computers store and process information represented as two-valued signals. These lowly binary digits, or bits, form the basis of the digital revolution.
@@ -45,6 +120,7 @@ We will derive several ways to perform arithmetic operations by directly manipul
 
 The C++ programming language is built upon C, using the exact same numeric representations and operations. Everything said in this chapter about C also holds for C++.
 
+<!-- TOC --><a name="21-information-storage"></a>
 ## 2.1 Information Storage
 
 Rather than accessing individual bits in memory, most computers use blocks of 8 bits, or **bytes**, as the smallest addressable unit of memory. A machine-level program views memory as a very large array of bytes, referred to as **virtual memory**. Every byte of memory is identified by a unique number, known as its **address**, and the set of all possible addresses is known as the **virtual address space**.
@@ -61,6 +137,7 @@ The compiler and run-time system partitions this memory space into more manageab
 > 
 >Truly understanding pointers requires examining their representation and implementation at the machine level.
 
+<!-- TOC --><a name="211-hexadecimal-notation"></a>
 ### 2.1.1 Hexadecimal Notation
 
 A single byte consists of 8 bits. In binary notation, its value ranges from 00000000 to 11111111. When viewed as a decimal integer, its value ranges from 0 to 255.
@@ -69,6 +146,7 @@ Neither notation is very convenient for describing bit patterns; we write bit pa
 
 ![Hexadecimal Notation](/assets/6.png)
 
+<!-- TOC --><a name="212-data-sizes"></a>
 ### 2.1.2 Data Sizes
 
 Every computer has a **word** size, indicating the nominal size of pointer data. Since a virtual address is encoded by such a word, the most important system parameter determined by the word size is the maximum size of the virtual address space. The word size determines the maximum memory address number it can represent; that is, for a machine with a w-bit word size, the virtual addresses can range from 0 to 2<sup>w</sup> - 1, giving the program access to at most 2<sup>w</sup> bytes.
@@ -86,6 +164,7 @@ The C language supports multiple data formats for both integer and floating- poi
 
 Programmers should strive to make their programs portable across different machines and compilers. One aspect of portability is to make the program insensitive to the exact sizes of the different data types. The C standards set lower bounds on the numeric ranges of the different data types, as will be covered later, but there are no upper bounds (except with the fixed-size types).
 
+<!-- TOC --><a name="213-addressing-and-byte-ordering"></a>
 ### 2.1.3 Addressing and Byte Ordering
 
 For program objects that span multiple bytes, we must establish two conventions: what the address of the object will be, and how we will order the bytes in memory. In virtually all machines, a multi-byte object is stored as a contiguous sequence of bytes, with the address of the object given by the smallest (the "first") address of the bytes used.
@@ -103,6 +182,7 @@ There is no technological reason to choose one byte ordering convention over the
 - A second case where byte ordering becomes important is when looking at the byte sequences representing integer data. This occurs often when inspecting machine-level programs.
 - When programs are written that circumvent the normal type system. In the C language, this can be done using a cast or a union to allow an object to be referenced according to a different data type from which it was created.
 
+<!-- TOC --><a name="214-representing-strings"></a>
 ### 2.1.4 Representing Strings
 
 A string in C is encoded by an array of characters terminated by the **null** (having value 0) character. Each character is represented by some standard encoding, with the most common being the ASCII character code.
@@ -113,6 +193,7 @@ A string in C is encoded by an array of characters terminated by the **null** (h
 
 Text data are more platform independent than binary data.
 
+<!-- TOC --><a name="215-representing-code"></a>
 ### 2.1.5 Representing Code
 
 Instruction codings are different. Different machine types use different and incompatible instructions and encodings. Even identical processors running different operating systems have differences in their coding conventions and hence are not binary compatible. Binary code is seldom portable across different combinations of machine and operating system.
@@ -130,6 +211,7 @@ int sum(int x, int y) {
 **Sun** `81 c3 e0 08 90 02 00 09` 
 **Linux** `64 55 48 89 e5 89 7d fc 89 75 f8 03 45 fc c9 c3`
 
+<!-- TOC --><a name="216-introduction-to-boolean-algebra"></a>
 ### 2.1.6 Introduction to Boolean Algebra
 
 This started with the work of George Boole (1815– 1864) around 1850 and thus is known as Boolean algebra. Boole observed that by encoding logic values true and false as binary values 1 and 0, he could formulate an algebra that captures the basic principles of logical reasoning.
@@ -150,6 +232,7 @@ As examples, consider the case where w = 4, and with arguments a = [0110] and b 
 
 One useful application of bit vectors is to represent finite sets. We can encode any subset A ? {0, 1, . . . , w - 1} with a bit vector [aw-1, . . . , a1, a0], where ai = 1if and only if i ? A. For example, recalling that we write aw-1 on the left and a0 on the right, bit vector a = [01101001] encodes the set A = {0, 3, 5, 6}, while bit vector b = [01010101]encodes the set B = {0, 2, 4, 6}. With this way of encoding sets, Boolean operations | and & correspond to set union and intersection, respectively, and ~ corresponds to set complement. Continuing our earlier example, the operation a & b yields bit vector [01000001], while A n B = {0, 6}.
 
+<!-- TOC --><a name="interesting"></a>
 #### Interesting! 
 
 Computers generate color pictures on a video screen or liquid crystal display by mixing three different colors of light: red, green, and blue. Imagine a simple scheme, with three different lights, each of which can be turned on or off, projecting onto a glass screen:
@@ -171,6 +254,7 @@ We can then create eight different colors based on the absence (0) or presence (
 
 Each of these colors can be represented as a bit vector of length 3, and we can apply Boolean operations to them.
 
+<!-- TOC --><a name="217-bit-level-operations-in-c"></a>
 ### 2.1.7 Bit-Level Operations in C
 
 One useful feature of C is that it supports bitwise Boolean operations. In fact, the symbols we have used for the Boolean operations are exactly those used by C: `|` for _or_, `&` for _and_, `~` for _not_, and `^` for _exclusive-or_. These can be applied to any “integral” data type,
@@ -181,12 +265,14 @@ Here are some examples of expression evaluation for data type char:
 
 One common use of bit-level operations is to implement masking operations, where a mask is a bit pattern that indicates a selected set of bits within a word. As an example, the mask 0xFF (having ones for the least significant 8 bits) indicates the low-order byte of a word. The bit-level operation x & 0xFF yields a value consisting of the least significant byte of x, but with all other bytes set to 0. For example, with x = 0x89ABCDEF, the expression would yield 0x000000EF.
 
+<!-- TOC --><a name="218-logical-operations-in-c"></a>
 ### 2.1.8 Logical Operations in C
 
 C also provides a set of logical operators `||`, `&&`, and `!`, which correspond to the _or_, _and_, and _not_ operations of logic. These can easily be confused with the bit-level operations, but their behavior is quite different. The logical operations treat any nonzero argument as representing true and argument 0 as representing false. They return either 1 or 0, indicating a result of either true or false, respectively.
 
 A second important distinction between the logical operators ‘&&’ and ‘||’ versus their bit-level counterparts ‘&’ and ‘|’ is that the logical operators do not evaluate their second argument if the result of the expression can be determined by evaluating the first argument. Thus, for example, the expression `a && 5/a` will never cause a division by zero, and the expression `p && *p++` will never cause the dereferencing of a null pointer. This is called **short-circuiting**
 
+<!-- TOC --><a name="219-shift-operations-in-c"></a>
 ### 2.1.9 Shift Operations in C
 
 C also provides a set of shift operations for shifting bit patterns to the left and to the right. For an operand x having bit representation [x<sub>w-1</sub>, x<sub>w-2</sub>, . . . , x<sub>0</sub>], the C expression `x << k` yields a value with bit representation [x<sub>w-k-1</sub>, x<sub>w-k-2</sub>, . . . , x<sub>0</sub>, 0, . . . , 0]. That is, x is shifted k bits to the left, dropping off the k most significant bits and filling the right end with k zeros. The shift amount should be a value between 0 and w - 1. Shift operations associate from left to right, so `x << j << k` is equivalent to `(x << j) << k`.
@@ -202,6 +288,7 @@ As examples, the following table shows the effect of applying the different shif
 
 The C standards do not precisely de?ne which type of right shift should be used with signed numbers—either arithmetic or logical shifts may be used. This unfortunately means that any code assuming one form or the other will potentially encounter portability problems. In practice, however, almost all compiler/machine combinations use arithmetic right shifts for signed data, and many programmers assume this to be the case.
 
+<!-- TOC --><a name="22-integer-representations"></a>
 ## 2.2 Integer Representations
 
 We will describe two different ways bits can be used to encode integers:
@@ -211,6 +298,7 @@ We will describe two different ways bits can be used to encode integers:
 
 We will see later that they are strongly related both in their mathematical properties and their machine-level implementations. We also investigate the effect of expanding or shrinking an encoded integer to fit a representation with a different length.
 
+<!-- TOC --><a name="terminology-reference"></a>
 ### Terminology Reference
 
 This is the mathematical terminology we use to define and characterize how computers encode and operate on integer data:
@@ -233,6 +321,7 @@ This is the mathematical terminology we use to define and characterize how compu
 | -wt | Operation | Two’s-complement negation |
 | -wu | Operation | Unsigned negation|
 
+<!-- TOC --><a name="221-integral-data-types"></a>
 ### 2.2.1 Integral Data Types
 
 C supports a variety of integral data types—ones that represent ﬁnite ranges of integers. Each type can specify a size with keyword `char`, `short`, `long`, as well as an indication of whether the represented numbers are all nonnegative (declared as `unsigned`), or possibly negative (the default.)
@@ -242,8 +331,10 @@ C supports a variety of integral data types—ones that represent ﬁnite ranges
 
 One important feature to note is that the ranges are not symmetric—the range of negative numbers extends one further than the range of positive numbers.
 
+<!-- TOC --><a name="222-unsigned-encodings"></a>
 ### 2.2.2 Unsigned Encodings
 
+<!-- TOC --><a name="principle-definition-of-unsigned-encoding"></a>
 #### Principle: **Definition of unsigned encoding**
 
 Let us consider an integer data type of _w_ bits. We write a bit vector as either x<sup>➡</sup>, to denote the entire vector, or as [x<sub>w-1</sub>, x<sub>w-2</sub>, . . . , x<sub>0</sub>] to denote the individual bits within the vector.
@@ -253,16 +344,19 @@ Let us consider an integer data type of _w_ bits. We write a bit vector as eithe
 
 The function B2U<sub>w</sub> maps strings of zeros and ones of length _w_ to nonnegative integers.
 
+<!-- TOC --><a name="principle-uniqueness-of-unsigned-encoding"></a>
 #### Principle: **Uniqueness of unsigned encoding**
 
 The unsigned binary representation has the important property that every number between 0 and 2 _w_ − 1 has a unique encoding as a  _w_-bit value.
 
 Function B2U<sub>w</sub> is a bijection. The mathematical term bijection refers to a function f that goes two ways; in this case, the function B2U<sub>w</sub> maps each bit vector of length w to a unique number between 0 and 2 _w_ − 1, and it has an inverse, which we call U2B<sub>w</sub> (for “unsigned to binary”), that maps each number in the range 0 to 2 _w_ − 1 to a unique pattern of _w_ bits.
 
+<!-- TOC --><a name="223-twos-complement"></a>
 ### 2.2.3 Two's Complement 
 
 The most common computer representation of signed numbers is known as two’s-complement form. This is defined by interpreting the most significant bit of the word to have negative weight. We express this interpretation as a function B2T<sub>w</sub> (for “binary to two’s complement” length w):
 
+<!-- TOC --><a name="principle-definition-of-twos-complement-encoding"></a>
 #### Principle: **Definition of two's-complement encoding**
 
 ![](assets/2023-12-19-13-47-37.png)
@@ -275,6 +369,7 @@ The least representable value is given by bit vector [1,0 . . . 0] (set the bit 
 
 Every number within the representable range has a unique encoding as a _w_-bit two’s-complement number:
 
+<!-- TOC --><a name="principle-uniqueness-of-twos-complement-encoding"></a>
 #### Principle: **Uniqueness of two's complement encoding**
 
 Function B2Tw is a bijection. 
@@ -291,12 +386,14 @@ Second, the maximum unsigned value is just over twice the maximum two’s-comple
 
 The C standards do not require signed integers to be represented in two’s complement form, but nearly all machines do so. Programmers who are concerned with maximizing portability across all possible machines should not assume any particular range of representable values, nor should they assume any particular representation of signed numbers. On the other hand, many programs are written assuming a two’s-complement representation of signed numbers, and the “typical” ranges shown in Figures 2.9 and 2.10, and these programs are portable across a broad range of machines and compilers.
 
+<!-- TOC --><a name="224-conversions-between-signed-and-unsigned"></a>
 ### 2.2.4 Conversions between Signed and Unsigned
 
 C allows casting between different numeric data types. For example, suppose variable x is declared as int and u as unsigned. The expression (unsigned) x converts the value of x to an unsigned value, and (int) u converts the value of u to a signed integer.
 
 The effect of casting is to keep the bit values identical but change how these bits are interpreted. The underlying bit representation stays the same. This is a general rule for how most C implementations handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not.
 
+<!-- TOC --><a name="principle-conversions-from-twos-complement-to-unsigned"></a>
 #### Principle: **Conversions from two's complement to unsigned**
 
 ![](assets/2023-12-19-14-12-36.png)
@@ -305,6 +402,7 @@ The effect of casting is to keep the bit values identical but change how these b
 
 As it shows, when mapping a signed number to its unsigned counterpart, negative numbers are converted to large positive numbers, while nonnegative numbers remain unchanged.
 
+<!-- TOC --><a name="principle-conversion-from-unsigned-to-twos-complement"></a>
 #### Principle: **Conversion from unsigned to two's complement**
 
 ![](assets/2023-12-21-16-29-46.png)
@@ -313,6 +411,7 @@ As it shows, when mapping a signed number to its unsigned counterpart, negative 
 
 To summarize, we considered the effects of converting in both directions between unsigned and two's-complement representations. For values x in the range 0 ≤ x ≤ TMax<sub>w</sub>, we have T2U<sub>w</sub>(x) = x and U2T<sub>w</sub>(x) = x. That is, numbers in this range have identical unsigned and two's-complement representations. For values outside of this range, the conversions either add or subtract 2<sup>w</sup>.
 
+<!-- TOC --><a name="225-signed-versus-unsigned-in-c"></a>
 ### 2.2.5 Signed versus Unsigned in C
 
 C supports both signed and unsigned arithmetic for all of its integer data types. Although the C standard does not specify a particular representation of signed numbers, almost all machines use two’s complement. Generally, most numbers are signed by default.
@@ -341,6 +440,7 @@ tx = ux; /* Cast to signed */
 uy = ty; /* Cast to unsigned */
 ```
 
+<!-- TOC --><a name="226-expanding-the-bit-representation-of-a-number"></a>
 ### 2.2.6 Expanding the Bit Representation of a Number
 
 One common operation is to convert between integers having different word sizes while retaining the same numeric value. Of course, this may not be possible when
@@ -350,10 +450,12 @@ To convert an unsigned number to a larger data type, we can simply add leading z
 
 ![](assets/2023-12-21-16-46-47.png)
 
+<!-- TOC --><a name="principle-expansion-of-an-unsigned-number-by-_zero_-extension"></a>
 #### Principle: Expansion of an unsigned number by _zero_ extension
 
 ![](assets/2023-12-21-16-46-16.png)
 
+<!-- TOC --><a name="principle-expansion-of-a-twos-complement-number-by-_sign_-extension"></a>
 #### Principle: Expansion of a two's-complement number by _sign_ extension
 
 For converting a two’s-complement number to a larger data type, the rule is to perform a sign extension, adding copies of the most significant bit to the representation, expressed by the following principle:
@@ -362,6 +464,7 @@ For converting a two’s-complement number to a larger data type, the rule is to
 
 Sign extension preserves the value of a two’s-complement number.
 
+<!-- TOC --><a name="227-truncating-numbers"></a>
 ### 2.2.7 Truncating Numbers
 
 If we reduce the number of bits that represent a number, rather than extending a value with extra bits, we are **truncating** the number.
@@ -378,18 +481,21 @@ When truncating a _w_-bit number _x→_ = [x<sub>w-1</sub>, x<sub>w-2</sub>, . .
 
 Truncating a number can alter its value—a form of overflow. For an unsigned number, we can readily characterize the numeric value that will result.
 
+<!-- TOC --><a name="principle-truncation-of-an-unsigned-number"></a>
 #### Principle: **Truncation of an unsigned number**
 
 ![](assets/2023-12-22-16-47-15.png)
 
 The intuition behind this principle is simply that all of the bits that were truncated have weights of the form 2i , where i ≥ k, and therefore each of these weights reduces to zero under the modulus operation.
 
+<!-- TOC --><a name="principle-truncation-of-a-twos-complement-number"></a>
 #### Principle: **Truncation of a two's-complement number**
 
 ![](assets/2023-12-22-16-48-43.png)
 
 In this formulation, x mod 2<sup>k</sup> will be a number between 0 and 2<sup>k - 1</sup>. Applying function U2T<sub>k</sub> to it will have the effect of converting the most significant bit x<sup>k - 1</sup> from having weight 2<sup>k - 1</sup> to having weight −2<sup>k - 1</sup>.
 
+<!-- TOC --><a name="228-advice-on-signed-versus-unsigned"></a>
 ### 2.2.8 Advice on Signed versus Unsigned
 
 As we have seen, the implicit casting of signed to unsigned leads to some nonintuitive behavior. Nonintuitive features often lead to program bugs, and ones involving the nuances of implicit casting can be especially difficult to see. Since the casting takes place without any clear indication in the code, programmers often overlook its effects.
@@ -399,12 +505,15 @@ One way to avoid such bugs is to never use unsigned numbers. In fact, few langua
 Unsigned values are very useful when we want to think of words as just collections of bits with no numeric interpretation. This occurs, for example, when packing a word with flags describing various Boolean conditions. Addresses are naturally unsigned, so systems programmers find unsigned types to be helpful. Unsigned values are also useful when implementing mathematical packages for
 modular arithmetic and for multiprecision arithmetic, in which numbers are represented by arrays of words.
 
+<!-- TOC --><a name="23-integer-arithmetic"></a>
 ## 2.3 Integer Arithmetic
 
 It's important to consider the **artifacts of the finite computer arithmetic**. Understanding the nuances of computer arithmetic can help programmers write more reliable code. For example, adding two positive numbers can yield a negative result, and that the comparison `x < y` can yield a different result than the comparison `x-y < 0`.
 
+<!-- TOC --><a name="231-unsigned-addition"></a>
 ### 2.3.1 Unsigned Addition
 
+<!-- TOC --><a name="principle-unsigned-addition"></a>
 #### Principle: **Unsigned addition**
 
 ![](assets/2023-12-23-15-57-32.png)
@@ -415,22 +524,26 @@ An arithmetic operation is said to overflow when the full integer result cannot 
 
 ![](assets/2023-12-23-15-59-04.png)
 
+<!-- TOC --><a name="principle-detecting-overflow-of-unsigned-addition"></a>
 #### Principle: **Detecting overflow of unsigned addition**
 
 ![](assets/2023-12-23-15-59-54.png)
 
 >Modular addition forms a mathematical structure known as an **abelian** group, named after the Norwegian mathematician Niels Henrik Abel (1802–1829). That is, it is commutative (that’s where the “abelian” part comes in) and associative; it has an identity element 0, and every element has an additive inverse.
 
+<!-- TOC --><a name="principle-unsigned-negation"></a>
 #### Principle: **Unsigned negation**
 
 ![](assets/2023-12-23-16-02-50.png)
 
+<!-- TOC --><a name="232-twos-complement-addition"></a>
 ### 2.3.2 Two's-Complement Addition
 
 With two’s-complement addition, we must decide what to do when the result is either too large (positive) or too small (negative) to represent.
 
 We avoid ever-expanding data sizes by truncating the representation to _w_ bits.
 
+<!-- TOC --><a name="principle-twos-complement-addition"></a>
 #### Principle: **Two's complement addition**
 
 ![](assets/2023-12-23-16-05-29.png)
@@ -441,22 +554,27 @@ When the sum x + y exceeds TMax<sub>w</sub> (case 4), we say that positive overf
 
 ![](assets/2023-12-23-16-08-41.png)
 
+<!-- TOC --><a name="principle-detecting-overflow-in-twos-complement-addition"></a>
 #### Principle: **Detecting overflow in two's-complement addition**
 
 ![](assets/2023-12-23-16-09-52.png)
 
+<!-- TOC --><a name="233-twos-complement-negation"></a>
 ### 2.3.3 Two's-Complement Negation
 
 We can see that every number x in the range TMin<sub>w</sub> ≤ x ≤ TMax<sub>w</sub> has an additive inverse under +tw, which we denote -tw x as follows:
 
+<!-- TOC --><a name="principle-twos-complement-negation"></a>
 #### Principle: **Two's complement negation**
 
 ![](assets/2023-12-24-15-41-52.png)
 
 That is, for w-bit two’s-complement addition, TMin<sub>w</sub> is its own additive inverse, while any other value x has −x as its additive inverse.
 
+<!-- TOC --><a name="234-unsigned-multiplication"></a>
 ### 2.3.4 Unsigned Multiplication
 
+<!-- TOC --><a name="principle-unsigned-multiplicaiton"></a>
 #### Principle: **Unsigned multiplicaiton**
 
 ![](assets/2023-12-24-15-51-15.png)
@@ -465,8 +583,10 @@ Integers x and y in the range 0 ≤ x, y ≤ 2<sup>w</sup> − 1 can be represen
 
 Truncating an unsigned number to w bits is equivalent to computing its value modulo 2<sup>w</sup>:
 
+<!-- TOC --><a name="235-twos-complement-multiplication"></a>
 ### 2.3.5 Two's Complement Multiplication
 
+<!-- TOC --><a name="principle-twos-complement-multiplication"></a>
 #### Principle: **Two's complement multiplication**
 
 Signed multiplication in C generally is performed by truncating the 2w-bit product to w bits.
@@ -475,6 +595,7 @@ We denote this value as x *tw y. Truncating a two’s-complement number to w bit
 
 ![](assets/2023-12-24-15-53-59.png)
 
+<!-- TOC --><a name="principle-bit-level-equivalence-of-unsigned-and-twos-complement-multiplication"></a>
 #### Principle: **Bit-level equivalence of unsigned and two's complement multiplication**
 
 The bit-level representation of the product operation is identical for both unsigned and two’s-complement multiplication
@@ -483,18 +604,21 @@ The bit-level representation of the product operation is identical for both unsi
 
 ![](assets/2023-12-24-15-58-54.png)
 
+<!-- TOC --><a name="236-multiplying-by-constants"></a>
 ### 2.3.6 Multiplying by Constants
 
 Historically, the integer multiply instruction on many machines was fairly slow, requiring 10 or more clock cycles, whereas other integer operations—such as addition, subtraction, bit-level operations, and shifting—required only 1 clock cycle. As a consequence, one important optimization used by compilers is to attempt to replace multiplications by constant factors with combinations of shift and addition operations. 
 
 We will first consider the case of multiplying by a power of 2, and then we will generalize this to arbitrary constants.
 
+<!-- TOC --><a name="principle-multiplication-by-a-power-of-2"></a>
 #### Principle: **Multiplication by a power of 2**
 
 ![](assets/2023-12-25-17-42-28.png)
 
 So, for example, 11 can be represented for w = 4 as [1011]. Shifting this left by k = 2 yields the 6-bit vector [101100], which encodes the unsigned number 11 . 4 = 44.
 
+<!-- TOC --><a name="principle-unsigned-multiplication-by-a-power-of-2"></a>
 #### Principle: **Unsigned multiplication by a power of 2**
 
 ![](assets/2023-12-25-17-43-33.png)
@@ -505,6 +629,7 @@ Given that integer multiplication is more costly than shifting and adding, many 
 
 Of course, the trade-off between using combinations of shifting, adding, and subtracting versus a single multiplication instruction depends on the relative speeds of these instructions, and these can be highly machine dependent. Most compilers only perform this optimization when a small number of shifts, adds, and subtractions suffice.
 
+<!-- TOC --><a name="237-dividing-by-powers-of-2"></a>
 ### 2.3.7 Dividing by Powers of 2
 
 Integer division on most machines is even slower than integer multiplication— requiring 30 or more clock cycles. Dividing by a power of 2 can also be performed using shift operations, but we use a right shift rather than a left shift. The two different right shifts—logical and arithmetic—serve this purpose for unsigned and two’s-complement numbers, respectively.
@@ -513,6 +638,7 @@ Integer division on most machines is even slower than integer multiplication— 
 
 ![](assets/2023-12-25-17-53-53.png)
 
+<!-- TOC --><a name="principle-unsigned-division-by-a-power-of-2"></a>
 #### Principle: **Unsigned division by a power of 2**
 
 ![](assets/2023-12-25-17-53-05.png)
@@ -521,12 +647,14 @@ Integer division on most machines is even slower than integer multiplication— 
 
 The case for dividing by a power of 2 with two’s-complement arithmetic is slightly more complex. First, the shifting should be performed using an arithmetic right shift, to ensure that negative values remain negative.
 
+<!-- TOC --><a name="principle-twos-complement-division-by-a-power-of-2-rounding-down"></a>
 #### Principle: **Two’s-complement division by a power of 2, rounding down**
 
 ![](assets/2023-12-25-17-57-03.png)
 
 We can correct for the improper rounding that occurs when a negative number is shifted right by “biasing” the value before shifting.
 
+<!-- TOC --><a name="principle-twos-complement-division-by-a-power-of-2-rounding-up"></a>
 #### Principle: **Two’s-complement division by a power of 2, rounding up** 
 
 ![](assets/2023-12-25-17-59-27.png)
@@ -538,6 +666,7 @@ Figure 2.30 demonstrates how adding the appropriate bias before performing the a
 We now see that division by a power of 2 can be implemented using logical or arithmetic right shifts. This is precisely the reason the two types of right shifts are available on most machines. Unfortunately, this approach does not generalize to
 division by arbitrary constants. Unlike multiplication, we cannot express division by arbitrary constants K in terms of division by powers of 2.
 
+<!-- TOC --><a name="238-final-thought-on-integer-arithmetic"></a>
 ### 2.3.8 Final Thought on Integer Arithmetic
 
 The “integer” arithmetic performed by computers is really a form of modular arithmetic. The finite word size used to represent numbers limits the range of possible values, and the resulting operations can overflow.
@@ -546,6 +675,7 @@ The two’s-complement representation provides a clever way to represent both ne
 
 Some of the conventions in the C language can yield some surprising results, and these can be sources of bugs that are hard to recognize or understand. We have especially seen that the `unsigned` data type, while conceptually straightforward, can lead to behaviors that even experienced programmers do not expect. We have also seen that this data type can arise in unexpected ways—for example, when writing integer constants and when invoking library routines.
 
+<!-- TOC --><a name="24-floating-point"></a>
 ## 2.4 Floating Point
 
 A floating-point representation encodes rational numbers of the form V = x × 2y. It is useful for performing computations involving very large numbers (|V| >> 0), numbers very close to 0 (|V| << 1), and more generally as an approximation to real arithmetic.
@@ -556,6 +686,7 @@ All of this changed around 1985 with the advent of IEEE Standard 754, a carefull
 
 >The Institute of Electrical and Electronics Engineers (IEEE—pronounced “eye-triple-ee”) is a professional society that encompasses all of electronic and computer technology. It publishes journals, sponsors conferences, and sets up committees to define standards on topics ranging from power transmission to software engineering. Another example of an IEEE standard is the 802.11 standard for wireless networking.
 
+<!-- TOC --><a name="241-fractional-binary-numbers"></a>
 ### 2.4.1 Fractional Binary Numbers
 
 Decimal notation uses a representation of the form:
@@ -594,6 +725,7 @@ Assuming we consider only finite-length encodings, decimal notation cannot repre
 
 ![](assets/2023-12-26-19-03-23.png)
 
+<!-- TOC --><a name="242-iee-floating-point-representation"></a>
 ### 2.4.2 IEE Floating-Point Representation
 
 Positional notation such as considered in the previous section would not be efficient for representing very large numbers. For example, the representation of 5 × 2<sup>100</sup> would consist of the bit pattern 101 followed by 100 zeros. Instead, we would like to represent numbers in a form x × 2<sup>y</sup> by giving the values of x and y.
@@ -617,6 +749,7 @@ The value encoded by a given bit representation can be divided into three differ
 
 ![](assets/2023-12-26-19-15-32.png)
 
+<!-- TOC --><a name="case-1-normalized-values"></a>
 #### Case 1: Normalized Values
 
 This is the most common case. It occurs when the bit pattern of exp is neither all zeros (numeric value 0) nor all ones (numeric value 255 for single precision, 2047 for double). 
@@ -625,6 +758,7 @@ This is the most common case. It occurs when the bit pattern of exp is neither a
 
 - The fraction field `frac` is interpreted as representing the fractional value f , where 0 <= f < 1, having binary representation 0.f<sup>n-1</sup> . . . f<sup>1</sup>f<sup>0</sup>, that is, with the binary point to the left of the most significant bit. The significand is defined to be M = 1 + f . 
 
+<!-- TOC --><a name="case-2-denormalized-values"></a>
 #### Case 2: Denormalized Values
 
 When the exponent field is all zeros, the represented number is in denormalized form. In this case, the exponent value is E = 1 - Bias, and the significand value is M = f, that is, the value of the fraction field without an implied leading 1.
@@ -633,12 +767,15 @@ When the exponent field is all zeros, the represented number is in denormalized 
 
 - Denormalized numbers serve two purposes. First, they provide a way to represent numeric value 0, since with a normalized number we must always have M . 1, and hence we cannot represent 0. In fact, the floating-point representation of +0.0 has a bit pattern of all zeros: the sign bit is 0, the exponent field is all zeros (indicating a denormalized value), and the fraction field is all zeros, giving M = f = 0. (Curiously, when the sign bit is 1, but the other fields are all zeros, we get the value -0.0)
 
+<!-- TOC --><a name="case-3-special-values"></a>
 #### Case 3: Special Values
 
 A final category of values occurs when the exponent field is all ones. When the fraction field is all zeros, the resulting values represent infinity, either +∞ when s = 0 or -∞ when s = 1. Infinity can represent results that overflow, as when we multiply two very large numbers, or when we divide by zero. When the fraction field is nonzero, the resulting value is called a **NaN**, short for Not a Number. Such values are returned as the result of an operation where the result cannot be given as a real number or as infinity, as when computing the square root of -1 or -∞. They can also be useful in some applications for representing uninitialized data.
 
+<!-- TOC --><a name="243-example-numbers"></a>
 ### 2.4.3 Example Numbers
 
+<!-- TOC --><a name="244-rounding"></a>
 ### 2.4.4 Rounding
 
 Floating-point arithmetic can only approximate real arithmetic, since the representation has limited range and precision. Thus, for a value x, we generally want a systematic method of finding the “closest” matching value x' that can be represented in the desired floating-point format. This is the task of the **rounding operation**. 
@@ -663,6 +800,7 @@ The other three modes produce guaranteed bounds on the actual value. These can b
 - Round-down mode rounds both positive and negative numbers downward, giving a value x − such that x − ≤ x. 
 - Round-up mode rounds both positive and negative numbers upward, giving a value x + such that x ≤ x+.
 
+<!-- TOC --><a name="245-floating-point-operations"></a>
 ### 2.4.5 Floating Point Operations
 
 The IEEE standard specifies a simple rule for determining the result of an arithmetic operation ☉ such as addition or multiplication. Viewing floating-point values x and y as real numbers, and some operation defined over real numbers, the computation should yield Round(x ☉ y), the result of applying rounding to the exact result of the real operation.
@@ -671,6 +809,7 @@ In practice, there are clever tricks floating-point unit designers use to avoid 
 
 One strength of the IEEE standard’s method of specifying the behavior of floating-point operations is that it is independent of any particular hardware or software realization.
 
+<!-- TOC --><a name="floating-point-addition"></a>
 #### Floating-point addition
 
 Addition over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
@@ -699,6 +838,7 @@ However, this computation might yield a different value for x than would the ori
 Onthe other hand, floating-point addition satisfies the following monotonicity property: if a ≥ b, then x +f a ≥ x +f b for any values of a, b, and x other than NaN. This property of real (and integer) addition is not obeyed by unsigned or two’scomplement
 addition.
 
+<!-- TOC --><a name="floating-point-multiplication"></a>
 #### Floating-point Multiplication
 
 Floating-point multiplication also obeys many of the properties one normally associates with multiplication. Let us define x *f y to be Round(x × y). This operation is closed under multiplication (although possibly yielding infinity or NaN), it is commutative, and it has 1.0 as a multiplicative identity. On the other hand, **it is not associative**, due to the possibility of overflow or the loss of precision due to rounding.
@@ -713,12 +853,14 @@ We are also guaranteed that a *f a ≥ 0, as long as a != NaN. As we saw earlier
 
 >This lack of associativity and distributivity is of serious concern to scientific programmers and to compiler writers. Even such a seemingly simple task as writing code to determine whether two lines intersect in three-dimensional space can be a major challenge.
 
+<!-- TOC --><a name="246-floating-point-in-c"></a>
 ### 2.4.6 Floating Point in C
 
 All versions of C provide two different floating-point data types: float and double. On machines that support IEEE floating point, these data types correspond to single- and double-precision floating point. In addition, the machines use the round-to-even rounding mode.
 
 Unfortunately, since the C standards do not require the machine to use IEEE floating point, there are no standard methods to change the rounding mode or to get special values such as -0, +Inf, -Inf, or NaN. Most systems provide a combination of include (`.h`) files and procedure libraries to provide access to these features, but the details vary from one system to another.
 
+<!-- TOC --><a name="casting-rules-in-c-for-type-int-being-32-bits"></a>
 #### Casting rules in C (for type `int` being 32 bits)
 
 - From int to float, the number cannot overflow, but it may be rounded. 
@@ -726,6 +868,7 @@ Unfortunately, since the C standards do not require the machine to use IEEE floa
 - From double to float, the value can overflow to +Inf or -Inf, since the range is smaller. Otherwise, it may be rounded, because the precision is smaller. 
 - From float or double to int, the value will be rounded toward zero. For example, 1.999 will be converted to 1, while -1.999 will be converted to -1. Furthermore, the value may overflow. The C standards do not specify a fixed result for this case. Intel-compatible microprocessors designate the bit pattern [10 . . . 00] (TMin<sub>w</sub> for word size w) as an **integer indefinite** value. Any conversion from floating point to integer that cannot assign a reasonable integer approximation yields this value. Thus, the expression `(int) +1e10` yields `-21483648`, generating a negative value from a positive one.
 
+<!-- TOC --><a name="25-summary"></a>
 ## 2.5 Summary
 
 Computers encode information as bits, generally organized as sequences of bytes. Different encodings are used for representing integers, real numbers, and character strings. Different models of computers use different conventions for encoding numbers and for ordering the bytes within multi-byte data. 
