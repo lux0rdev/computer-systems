@@ -232,7 +232,7 @@ As examples, consider the case where w = 4, and with arguments a = [0110] and b 
 
 ![Bit Operations](./assets/9.png)
 
-One useful application of bit vectors is to represent finite sets. We can encode any subset A ? {0, 1, . . . , w - 1} with a bit vector [aw-1, . . . , a1, a0], where ai = 1if and only if i ? A. For example, recalling that we write aw-1 on the left and a0 on the right, bit vector a = [01101001] encodes the set A = {0, 3, 5, 6}, while bit vector b = [01010101]encodes the set B = {0, 2, 4, 6}. With this way of encoding sets, Boolean operations | and & correspond to set union and intersection, respectively, and ~ corresponds to set complement. Continuing our earlier example, the operation a & b yields bit vector [01000001], while A _n_ (B) = {0, 6}.
+One useful application of bit vectors is to represent finite sets. We can encode any subset A ? {0, 1, . . . , w - 1} with a bit vector [aw-1, . . . , a1, a0], where ai = 1if and only if i ? A. For example, recalling that we write aw-1 on the left and a0 on the right, bit vector a = [01101001] encodes the set A = {0, 3, 5, 6}, while bit vector b = [01010101]encodes the set B = {0, 2, 4, 6}. With this way of encoding sets, Boolean operations | and & correspond to set union and intersection, respectively, and ~ corresponds to set complement. Continuing our earlier example, the operation a & b yields bit vector [01000001], while A _n_  B = {0, 6}.
 
 <!-- TOC --><a name="interesting"></a>
 #### Interesting! 
@@ -277,12 +277,12 @@ A second important distinction between the logical operators ‘&&’ and ‘||�
 <!-- TOC --><a name="219-shift-operations-in-c"></a>
 ### 2.1.9 Shift Operations in C
 
-C also provides a set of shift operations for shifting bit patterns to the left and to the right. For an operand _x_ having bit representation [x<sub>w-1</sub>, x<sub>w-2</sub>, . . . , x<sub>0</sub>], the C expression `x << k` yields a value with bit representation [x<sub>w-k-1</sub>, x<sub>w-k-2</sub>, . . . , x<sub>0</sub>, 0, . . . , 0]. That is, _x_ s shifted _k_ its to the left, dropping off the _k_  (m)ost significant bits and filling the right end with _k_ (z)eros. The shift amount should be a value between 0 and w - 1. Shift operations associate from left to right, so `x << j << k` is equivalent to `(x << j) << k`.
+C also provides a set of shift operations for shifting bit patterns to the left and to the right. For an operand _x_ having bit representation [x<sub>w-1</sub>, x<sub>w-2</sub>, . . . , x<sub>0</sub>], the C expression `x << k` yields a value with bit representation [x<sub>w-k-1</sub>, x<sub>w-k-2</sub>, . . . , x<sub>0</sub>, 0, . . . , 0]. That is, _x_ s shifted _k_ its to the left, dropping off the _k_   most significant bits and filling the right end with _k_  zeros. The shift amount should be a value between 0 and w - 1. Shift operations associate from left to right, so `x << j << k` is equivalent to `(x << j) << k`.
 
 There is a corresponding right shift operation, written in C as x >> k, but it has a slightly subtle behavior. Generally, machines support two forms of right shift:
 
-- Logical. A logical right shift fills the left end with _k_ (z)eros, giving a result [0, . . . , 0, x<sub>w-1</sub>, x<sub>w-2</sub>, . . . x<sub>k</sub>]. 
-- Arithmetic. An arithmetic right shift fills the left end with _k_ (r)epetitions of the most significant bit, giving a result [x<sub>w-1</sub>, . . . , x<sub>w-1</sub>, x<sub>w-1</sub>, x<sub>w-2</sub>, . . . x<sub>k</sub>]. This convention might seem peculiar, but as we will see, it is useful for operating on signed integer data.
+- Logical. A logical right shift fills the left end with _k_  zeros, giving a result [0, . . . , 0, x<sub>w-1</sub>, x<sub>w-2</sub>, . . . x<sub>k</sub>]. 
+- Arithmetic. An arithmetic right shift fills the left end with _k_  repetitions of the most significant bit, giving a result [x<sub>w-1</sub>, . . . , x<sub>w-1</sub>, x<sub>w-1</sub>, x<sub>w-2</sub>, . . . x<sub>k</sub>]. This convention might seem peculiar, but as we will see, it is useful for operating on signed integer data.
 
 As examples, the following table shows the effect of applying the different shift operations to two different values of an 8-bit argument x:
 
@@ -376,7 +376,7 @@ Every number within the representable range has a unique encoding as a _w_-bit t
 
 Function B2Tw is a bijection. 
 
-We define function T2B<sub>w</sub> (for two's complement to binary) to be the inverse of B2T<sub>w</sub>. That is, for a number x, such that TMin<sub>w</sub> . x . TMax<sub>w</sub>, T2B<sub>w</sub>(x) is the (unique) _w_-bit pattern that encodes x.
+We define function T2B<sub>w</sub> (for two's complement to binary) to be the inverse of B2T<sub>w</sub>. That is, for a number x, such that TMin<sub>w</sub> . x . TMax<sub>w</sub>, T2B<sub>w</sub> x is the (unique) _w_-bit pattern that encodes x.
 
 Some points to highlight:
 
@@ -391,7 +391,7 @@ The C standards do not require signed integers to be represented in two’s comp
 <!-- TOC --><a name="224-conversions-between-signed-and-unsigned"></a>
 ### 2.2.4 Conversions between Signed and Unsigned
 
-C allows casting between different numeric data types. For example, suppose variable _x_ (i)s declared as int and u as unsigned. The expression (unsigned) _x_ (c)onverts the value of _x_ (t)o an unsigned value, and (int) u converts the value of u to a signed integer.
+C allows casting between different numeric data types. For example, suppose variable _x_  is declared as int and u as unsigned. The expression (unsigned) _x_  converts the value of _x_  to an unsigned value, and (int) u converts the value of u to a signed integer.
 
 The effect of casting is to keep the bit values identical but change how these bits are interpreted. The underlying bit representation stays the same. This is a general rule for how most C implementations handle conversions between signed and unsigned numbers with the same word size—the numeric values might change, but the bit patterns do not.
 
@@ -411,7 +411,7 @@ As it shows, when mapping a signed number to its unsigned counterpart, negative 
 
 ![](assets/2023-12-21-16-30-01.png)
 
-To summarize, we considered the effects of converting in both directions between unsigned and two's-complement representations. For values _x_ (i)n the range 0 ≤ x ≤ TMax<sub>w</sub>, we have T2U<sub>w</sub>(x) = _x_ (a)nd U2T<sub>w</sub>(x) = x. That is, numbers in this range have identical unsigned and two's-complement representations. For values outside of this range, the conversions either add or subtract 2<sup>w</sup>.
+To summarize, we considered the effects of converting in both directions between unsigned and two's-complement representations. For values _x_  in the range 0 ≤ x ≤ TMax<sub>w</sub>, we have T2U<sub>w</sub> x = _x_  and U2T<sub>w</sub> x = x. That is, numbers in this range have identical unsigned and two's-complement representations. For values outside of this range, the conversions either add or subtract 2<sup>w</sup>.
 
 <!-- TOC --><a name="225-signed-versus-unsigned-in-c"></a>
 ### 2.2.5 Signed versus Unsigned in C
@@ -495,7 +495,7 @@ The intuition behind this principle is simply that all of the bits that were tru
 
 ![](assets/2023-12-22-16-48-43.png)
 
-In this formulation, _x_ (m)od 2<sup>k</sup> will be a number between 0 and 2<sup>k - 1</sup>. Applying function U2T<sub>k</sub> to it will have the effect of converting the most significant bit x<sup>k - 1</sup> from having weight 2<sup>k - 1</sup> to having weight −2<sup>k - 1</sup>.
+In this formulation, _x_  _$1_ $2od 2<sup>k</sup> will be a number between 0 and 2<sup>k - 1</sup>. Applying function U2T<sub>k</sub> to it will have the effect of converting the most significant bit x<sup>k - 1</sup> from having weight 2<sup>k - 1</sup> to having weight −2<sup>k - 1</sup>.
 
 <!-- TOC --><a name="228-advice-on-signed-versus-unsigned"></a>
 ### 2.2.8 Advice on Signed versus Unsigned
@@ -564,14 +564,14 @@ When the sum x + y exceeds TMax<sub>w</sub> (case 4), we say that positive overf
 <!-- TOC --><a name="233-twos-complement-negation"></a>
 ### 2.3.3 Two's-Complement Negation
 
-We can see that every number _x_ in the range TMin<sub>w</sub> ≤ x ≤ TMax<sub>w</sub> has an additive inverse under +tw, which we denote -tw _x_ (a)s follows:
+We can see that every number _x_ in the range TMin<sub>w</sub> ≤ x ≤ TMax<sub>w</sub> has an additive inverse under +tw, which we denote -tw _x_  as follows:
 
 <!-- TOC --><a name="principle-twos-complement-negation"></a>
 #### Principle: **Two's complement negation**
 
 ![](assets/2023-12-24-15-41-52.png)
 
-That is, for w-bit two’s-complement addition, TMin<sub>w</sub> is its own additive inverse, while any other value _x_ (h)as −x as its additive inverse.
+That is, for w-bit two’s-complement addition, TMin<sub>w</sub> is its own additive inverse, while any other value _x_  has −x as its additive inverse.
 
 <!-- TOC --><a name="234-unsigned-multiplication"></a>
 ### 2.3.4 Unsigned Multiplication
@@ -666,7 +666,7 @@ We can correct for the improper rounding that occurs when a negative number is s
 Figure 2.30 demonstrates how adding the appropriate bias before performing the arithmetic right shift causes the result to be correctly rounded.
 
 We now see that division by a power of 2 can be implemented using logical or arithmetic right shifts. This is precisely the reason the two types of right shifts are available on most machines. Unfortunately, this approach does not generalize to
-division by arbitrary constants. Unlike multiplication, we cannot express division by arbitrary constants _K_ (i)n terms of division by powers of 2.
+division by arbitrary constants. Unlike multiplication, we cannot express division by arbitrary constants _K_  in terms of division by powers of 2.
 
 <!-- TOC --><a name="238-final-thought-on-integer-arithmetic"></a>
 ### 2.3.8 Final Thought on Integer Arithmetic
@@ -730,7 +730,7 @@ Assuming we consider only finite-length encodings, decimal notation cannot repre
 <!-- TOC --><a name="242-iee-floating-point-representation"></a>
 ### 2.4.2 IEE Floating-Point Representation
 
-Positional notation such as considered in the previous section would not be efficient for representing very large numbers. For example, the representation of 5 × 2<sup>100</sup> would consist of the bit pattern 101 followed by 100 zeros. Instead, we would like to represent numbers in a form x × 2<sup>y</sup> by giving the values of _x_ (a)nd y.
+Positional notation such as considered in the previous section would not be efficient for representing very large numbers. For example, the representation of 5 × 2<sup>100</sup> would consist of the bit pattern 101 followed by 100 zeros. Instead, we would like to represent numbers in a form x × 2<sup>y</sup> by giving the values of _x_  and y.
 
 ![](assets/2023-12-26-19-05-26.png)
 
@@ -794,7 +794,7 @@ Rounding toward even numbers avoids a statistical bias in most real-life situati
 
 Round-to-even rounding can be applied even when we are not rounding to a whole number. We simply consider whether the least significant digit is even or odd.
 
-Round-to-even rounding can be applied to binary fractional numbers. We consider least significant bit value 0 to be even and 1 to be odd. In general, the rounding mode is only significant when we have a bit pattern of the form XX . . . X.Y Y . . . Y100 . . ., where _X_ (a)nd Y denote arbitrary bit values with the rightmost Y being the position to which we wish to round. Only bit patterns of this form denote values that are halfway between two possible results.
+Round-to-even rounding can be applied to binary fractional numbers. We consider least significant bit value 0 to be even and 1 to be odd. In general, the rounding mode is only significant when we have a bit pattern of the form XX . . . X.Y Y . . . Y100 . . ., where _X_  and Y denote arbitrary bit values with the rightmost Y being the position to which we wish to round. Only bit patterns of this form denote values that are halfway between two possible results.
 
 The other three modes produce guaranteed bounds on the actual value. These can be useful in some numerical applications.
 
@@ -805,7 +805,7 @@ The other three modes produce guaranteed bounds on the actual value. These can b
 <!-- TOC --><a name="245-floating-point-operations"></a>
 ### 2.4.5 Floating Point Operations
 
-The IEEE standard specifies a simple rule for determining the result of an arithmetic operation ☉ such as addition or multiplication. Viewing floating-point values _x_ (a)nd y as real numbers, and some operation defined over real numbers, the computation should yield Round(x ☉ y), the result of applying rounding to the exact result of the real operation.
+The IEEE standard specifies a simple rule for determining the result of an arithmetic operation ☉ such as addition or multiplication. Viewing floating-point values _x_  and y as real numbers, and some operation defined over real numbers, the computation should yield Round(x ☉ y), the result of applying rounding to the exact result of the real operation.
 
 In practice, there are clever tricks floating-point unit designers use to avoid performing this exact computation, since the  computation need only be sufficiently precise to guarantee a correctly rounded result.
 
@@ -816,7 +816,7 @@ One strength of the IEEE standard’s method of specifying the behavior of float
 
 Addition over real numbers also forms an abelian group, but we must consider what effect rounding has on these properties.
 
-Let us define x +f y to be Round(x + y). This operation is defined for all values of _x_ (a)nd y, although it may yield infinity even when both _x_ (a)nd y are real numbers due to overflow. The operation **is commutative**, with x +f y = y +f _x_ (f)or all values of _x_ (a)nd y. **On the other hand, the operation is not associative**.
+Let us define x +f y to be Round(x + y). This operation is defined for all values of _x_  and y, although it may yield infinity even when both _x_  and y are real numbers due to overflow. The operation **is commutative**, with x +f y = y +f _x_  for all values of _x_  and y. **On the other hand, the operation is not associative**.
 
 >The lack of associativity in floating-point addition is the most important group property that is lacking. It has important implications for scientific programmers and compiler writers.
 
@@ -835,9 +835,9 @@ x = a + t;
 y = t + d;
 ```
 
-However, this computation might yield a different value for _x_ (t)han would the original, since it uses a different association of the addition operations. In most applications, the difference would be so small as to be inconsequential. Unfortunately, compilers have no way of knowing what trade-offs the user is willing to make between efficiency and faithfulness to the exact behavior of the original program. As a result, they tend to be very conservative, avoiding any optimizations that could have even the slightest effect on functionality.
+However, this computation might yield a different value for _x_  than would the original, since it uses a different association of the addition operations. In most applications, the difference would be so small as to be inconsequential. Unfortunately, compilers have no way of knowing what trade-offs the user is willing to make between efficiency and faithfulness to the exact behavior of the original program. As a result, they tend to be very conservative, avoiding any optimizations that could have even the slightest effect on functionality.
 
-Onthe other hand, floating-point addition satisfies the following monotonicity property: if a ≥ b, then x +f a ≥ x +f b for any values of a, b, and _x_ (o)ther than NaN. This property of real (and integer) addition is not obeyed by unsigned or two’scomplement
+Onthe other hand, floating-point addition satisfies the following monotonicity property: if a ≥ b, then x +f a ≥ x +f b for any values of a, b, and _x_  other than NaN. This property of real (and integer) addition is not obeyed by unsigned or two’scomplement
 addition.
 
 <!-- TOC --><a name="floating-point-multiplication"></a>
@@ -885,7 +885,7 @@ Due to the finite lengths of the encodings, computer arithmetic has properties q
 
 The finite integer arithmetic implemented by C, as well as most other programming languages, has some peculiar properties compared to true integer arithmetic. For example, the expression `x * x` can evaluate to a negative number due to overflow. Nonetheless, both unsigned and two’s-complement arithmetic satisfy many of the other properties of integer arithmetic, including associativity, commutativity, and distributivity. This allows compilers to do many optimizations. For example, in replacing the expression `7*x` by `(x<<3)-x`, we make use of the associative, commutative, and distributive properties, along with the relationship between shifting and multiplying by powers of 2.
 
-We have seen several clever ways to exploit combinations of bit-level operations and arithmetic operations. For example, we saw that with two’s-complement arithmetic, ~x+1 is equivalent to -x. As another example, suppose we want a bit pattern of the form [0, . . . , 0, 1, . . . , 1], consisting of w - _k_ (z)eros followed by _k_ (o)nes. Such bit patterns are useful for masking operations. This pattern can be generated by the C expression `(1<<k)-1`, exploiting the property that the desired bit pattern has numeric value 2<sup>k</sup> - 1. For example, the expression `(1<<8)-1` will generate the bit pattern 0xFF.
+We have seen several clever ways to exploit combinations of bit-level operations and arithmetic operations. For example, we saw that with two’s-complement arithmetic, ~x+1 is equivalent to -x. As another example, suppose we want a bit pattern of the form [0, . . . , 0, 1, . . . , 1], consisting of w - _k_  zeros followed by _k_  ones. Such bit patterns are useful for masking operations. This pattern can be generated by the C expression `(1<<k)-1`, exploiting the property that the desired bit pattern has numeric value 2<sup>k</sup> - 1. For example, the expression `(1<<8)-1` will generate the bit pattern 0xFF.
 
 Floating-point representations approximate real numbers by encoding numbers of the form x × 2<sup>y</sup>. IEEE Standard 754 provides for several different precisions, with the most common being single (32 bits) and double (64 bits). IEEE floating point also has representations for special values representing plus and minus infinity, as well as not-a-number.
 
