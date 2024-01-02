@@ -577,7 +577,7 @@ That is, for w-bit two’s-complement addition, TMin<sub>w</sub> is its own addi
 ### 2.3.4 Unsigned Multiplication
 
 <!-- TOC --><a name="principle-unsigned-multiplicaiton"></a>
-#### Principle: **Unsigned multiplicaiton**
+#### Principle: **Unsigned multiplication**
 
 ![](assets/2023-12-24-15-51-15.png)
 
